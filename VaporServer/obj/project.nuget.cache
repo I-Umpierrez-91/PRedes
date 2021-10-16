@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "54+sgP2Oni0TssAO65teazz8J5wQ5WXjfTk5uGxAHtHXx+i8BraI3sToS5BDsS1hgcY/cqTOe5nURJjUoSn1Iw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\VaporServer\\VaporServer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0-preview.8.20407.11\\microsoft.netcore.platforms.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0-preview.8.20407.11\\microsoft.win32.systemevents.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0-preview.8.20407.11\\system.configuration.configurationmanager.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.drawing.common\\5.0.0-preview.8.20407.11\\system.drawing.common.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.security.accesscontrol\\5.0.0-preview.8.20407.11\\system.security.accesscontrol.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.security.cryptography.protecteddata\\5.0.0-preview.8.20407.11\\system.security.cryptography.protecteddata.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.security.permissions\\5.0.0-preview.8.20407.11\\system.security.permissions.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.security.principal.windows\\5.0.0-preview.8.20407.11\\system.security.principal.windows.5.0.0-preview.8.20407.11.nupkg.sha512",
+    "C:\\Users\\Caruso\\.nuget\\packages\\system.windows.extensions\\5.0.0-preview.8.20407.11\\system.windows.extensions.5.0.0-preview.8.20407.11.nupkg.sha512"
+  ],
+  "logs": []
+}
