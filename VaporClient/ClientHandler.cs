@@ -16,24 +16,25 @@ namespace VaporClient
     class ClientHandler
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
-        private Socket _socket;
+        private TcpClient _tcpClient;
         private INetworkStreamHandler _networkStreamHandler;
-        public ClientHandler()
+        public async Task ClientHandlerStart()
         {
             var clientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
-            var serverEndPoint = new IPEndPoint(IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
-                int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey)));
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _socket.Bind(clientEndPoint);
-            _socket.Connect(serverEndPoint);
-            _networkStreamHandler = new NetworkStreamHandler(new NetworkStream(_socket));
+            _tcpClient = new TcpClient(clientEndPoint);
+
+            await _tcpClient.ConnectAsync(
+                IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
+                int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey))).ConfigureAwait(false);
+            var keepConnection = true;
+
+            _networkStreamHandler = new NetworkStreamHandler(_tcpClient.GetStream());
             Console.WriteLine("Conectado al servidor");
         }
 
         public void CloseConnection()
         {
-            _socket.Shutdown(SocketShutdown.Both);
-            _socket.Close();
+            _tcpClient.Close();
         }
 
         public void SendRequest(int CommandConstant, string message)
@@ -44,14 +45,14 @@ namespace VaporClient
             _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
         }
 
-        public string ReadResponse()
+        public async Task< string> ReadResponse()
         {
             var headerLength = Header.GetLength();
             byte[] buffer;
-            buffer = _networkStreamHandler.Read(headerLength);
+            buffer = await _networkStreamHandler.Read(headerLength);
             var header = new Header();
             header.DecodeData(buffer);
-            byte[] bufferData = _networkStreamHandler.Read(header.IDataLength);
+            byte[] bufferData = await _networkStreamHandler.Read(header.IDataLength);
 
             return Encoding.UTF8.GetString(bufferData);
         }

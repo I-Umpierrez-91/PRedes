@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hQgBFsrLSG3cTqJrjsDLDmLigAVIl94Fm60xe6V+jk2aCUU2UhTt5BXie1LeQ2jyj8+juuSlsUH9Dk99PQDzrw==",
+  "dgSpecHash": "v0TQKLr/kVz+I6KIDY9VQKKbw0yJNUzZcjocbNQIY7aEIeBFmy7ucKtYVftJeb2AFMadEt4baUsxO/4+tkVD7A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\VaporClient\\VaporClient.csproj",
+  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporClient\\VaporClient.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0-preview.8.20407.11\\microsoft.netcore.platforms.5.0.0-preview.8.20407.11.nupkg.sha512",
     "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0-preview.8.20407.11\\microsoft.win32.systemevents.5.0.0-preview.8.20407.11.nupkg.sha512",

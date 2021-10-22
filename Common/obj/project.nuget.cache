@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "btC2hEg/luwZd2+eD1DRlVIvh360kYHtl3EU+iQJyg5LmuryMb7RHuELmdTD+kELU9Y0Q9ldq5uuwREAkJVpyQ==",
+  "dgSpecHash": "TmJSjES/H5EO99vXSvUA5rH0+H2Ccub6qAoX3mmw8qWnssYDs83gPGSFyiS/+8wN/pRcuwJ/05KgTETAVQDecA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\Common\\Common.csproj",
+  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\Common\\Common.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0-preview.8.20407.11\\microsoft.netcore.platforms.5.0.0-preview.8.20407.11.nupkg.sha512",
     "C:\\Users\\Caruso\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0-preview.8.20407.11\\microsoft.win32.systemevents.5.0.0-preview.8.20407.11.nupkg.sha512",

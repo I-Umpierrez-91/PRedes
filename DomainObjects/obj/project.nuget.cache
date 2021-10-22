@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5Oro9uRoIClkWwdAQa2+qweNISUUb297gpZDveAf821pK7C5T6XgCYN+L59Xx9iEGay2d3iJmFn7HzVfKsC5eA==",
+  "dgSpecHash": "+9rMmQHGYc8O4YQfeFxVNKRprCTMPRplwdsEGDQpwkvwGo3lvsIIpGzqU7jO7qRRTZOT/ttfgMHmUolalQRU1g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\DomainObjects\\DomainObjects.csproj",
+  "projectFilePath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\DomainObjects\\DomainObjects.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
