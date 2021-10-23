@@ -452,3 +452,10 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+VaporClient/bin/Debug/net5.0/Common.dll
+VaporClient/bin/Debug/net5.0/Common.dll
+VaporClient/bin/Debug/net5.0/VaporClient.dll
+VaporServer/bin/Debug/net5.0/Common.dll
+VaporServer/bin/Debug/net5.0/VaporServer.dll
+VaporServer/bin/Debug/net5.0/DomainObjects.dll
+*.dll
