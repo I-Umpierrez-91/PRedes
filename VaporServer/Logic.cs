@@ -1,4 +1,6 @@
-﻿using DomainObjects;
+﻿using Common.FileHandler;
+using Common.FileHandler.Interfaces;
+using DomainObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace VaporServer
         static public ICollection<Juego> _juegos = new List<Juego>();
         static public ICollection<Usuario> _usuarios = new List<Usuario>();
         static public ICollection<Review> _review = new List<Review>();
-
+        static public IFileHandler fileHandler = new FileHandler();
         public string PrintGameList() {
             string result = "";
             if (_juegos.Count > 0)
@@ -19,6 +21,7 @@ namespace VaporServer
                 result = result + ("Listado de todos los juegos: \n");
                 foreach (var j in _juegos) {
                     result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
+                    result = result + "Carátula: " + (string.IsNullOrEmpty(j.Caratula) ? "No se agregó carátula" : j.Caratula) + "\n";
                 }
                 return result;
             }
@@ -36,10 +39,18 @@ namespace VaporServer
             var _genero = Console.ReadLine();
             Console.WriteLine("Sinopsis: ");
             var _sinopsis = Console.ReadLine();
+            string path = "No";           
+            while (!path.Equals(string.Empty) && !fileHandler.FileExists(path))
+            {
+                Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
+                path = Console.ReadLine();
+            }
+            var _caratula = path;
             Juego newGame = new Juego(new List<Review>());
             newGame.Nombre = _nombre;
             newGame.Genero = _genero;
             newGame.Sinopsis = _sinopsis;
+            newGame.Caratula = _caratula;
             _juegos.Add(newGame);
             Console.WriteLine("Juego creado!");
         }
