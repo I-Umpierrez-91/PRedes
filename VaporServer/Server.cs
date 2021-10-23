@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 using VaporServer.Interfaces;
 
 namespace VaporServer
@@ -8,10 +9,11 @@ namespace VaporServer
     {
         static bool _exit = false;
         private static ILogic _logic = new Logic();
-        private static void Main()
+        private static async Task Main()
         {
             Console.WriteLine("Iniciando servidor...");
             var _serverHandler = new ServerHandler();
+            var startup = Task.Run(() =>_serverHandler.ServerHandlerStart());
             Console.WriteLine("Esperando a nuevos clientes...");
             Console.WriteLine("Bienvenido al Sistema Server");
             while (!_exit)
@@ -29,7 +31,7 @@ namespace VaporServer
                 {
                     case "0":
                         _exit = true;
-                        _serverHandler.CloseConnections();
+                        await _serverHandler.CloseConnections();
                         break;
                     case "1":
                         Console.WriteLine(_logic.PrintGameList());

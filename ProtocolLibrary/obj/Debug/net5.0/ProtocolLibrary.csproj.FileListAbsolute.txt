@@ -10,3 +10,15 @@ C:\Users\Caruso\source\repos\Obligatorio\ProtocolLibrary\obj\Debug\net5.0\Protoc
 C:\Users\Caruso\source\repos\Obligatorio\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.dll
 C:\Users\Caruso\source\repos\Obligatorio\ProtocolLibrary\obj\Debug\net5.0\ref\ProtocolLibrary.dll
 C:\Users\Caruso\source\repos\Obligatorio\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.pdb
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\bin\Debug\net5.0\ProtocolLibrary.deps.json
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\bin\Debug\net5.0\ProtocolLibrary.dll
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\bin\Debug\net5.0\ref\ProtocolLibrary.dll
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\bin\Debug\net5.0\ProtocolLibrary.pdb
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.csproj.AssemblyReference.cache
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.AssemblyInfoInputs.cache
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.AssemblyInfo.cs
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.dll
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ref\ProtocolLibrary.dll
+C:\Users\Caruso\source\repos\Obligatorio\PRedes\ProtocolLibrary\obj\Debug\net5.0\ProtocolLibrary.pdb

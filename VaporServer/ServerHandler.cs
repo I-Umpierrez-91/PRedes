@@ -4,6 +4,7 @@ using Common.NetworkUtils;
 using Common.NetworkUtils.Interfaces;
 using ProtocolLibrary;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -18,7 +19,7 @@ namespace VaporServer
     class ServerHandler
     {
         private readonly ISettingsManager SettingsMgr = new SettingsManager();
-        static List<Socket> _clients = new List<Socket>();
+        static BlockingCollection<TcpClient> _clients = new BlockingCollection<TcpClient>();
         private static int _clientNumber;
         private int _isTestDataLoaded;
         private static ILogic _logic = new Logic();
@@ -42,11 +43,11 @@ namespace VaporServer
             }
         }
 
-        public void CloseConnections()
+        public async Task CloseConnections()
         {
             foreach (var client in _clients)
             {
-                client.Shutdown(SocketShutdown.Both);
+                client.Dispose();
                 client.Close();
             }
             _server.Close(0);
@@ -55,6 +56,7 @@ namespace VaporServer
         private static async Task HandleClient(TcpClient client)
         {
             var id = Interlocked.Add(ref _clientNumber, 1);
+            _clients.Add(client);
             var connected = true;
             Console.WriteLine("Conectado el cliente " + id);
             var networkStreamHandler = new NetworkStreamHandler(client.GetStream());
@@ -71,6 +73,8 @@ namespace VaporServer
                     switch (header.ICommand)
                     {
                         case CommandConstants.ListGames:
+                            Console.WriteLine("El cliente idicó que quiere ver la lista de juegos");
+
                             var resMessage = Encoding.UTF8.GetBytes(_logic.PrintGameList());
                             var resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
                             await networkStreamHandler.Write(resHeader.GetResponse());
@@ -90,9 +94,16 @@ namespace VaporServer
 
 
                 }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine("El cliente " + id + " cerró la conexión");
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("El cliente " + id + " cerró la conexión: ");
+                    Console.WriteLine("Error interno, cerrando la conexión. " + ex.GetType());
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
                     connected = false;
                 }
             }

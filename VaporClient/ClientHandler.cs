@@ -32,17 +32,17 @@ namespace VaporClient
             Console.WriteLine("Conectado al servidor");
         }
 
-        public void CloseConnection()
+        public async Task CloseConnection()
         {
             _tcpClient.Close();
         }
 
-        public void SendRequest(int CommandConstant, string message)
+        public async Task SendRequest(int CommandConstant, string message)
         {
             var header = new Header(HeaderConstants.Request, CommandConstant, message.Length);
             var data = header.GetRequest();
-            _networkStreamHandler.Write(data);
-            _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
+            await _networkStreamHandler.Write(data);
+            await _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
         }
 
         public async Task< string> ReadResponse()
@@ -54,7 +54,9 @@ namespace VaporClient
             header.DecodeData(buffer);
             byte[] bufferData = await _networkStreamHandler.Read(header.IDataLength);
 
-            return Encoding.UTF8.GetString(bufferData);
+            var result = Encoding.UTF8.GetString(bufferData);
+
+            return result;
         }
     }
 }

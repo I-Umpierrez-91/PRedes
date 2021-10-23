@@ -12,7 +12,7 @@ namespace DomainObjects
         public string Genero { get; set; }
         public float Rating { get; set; }
         public string Sinopsis { get; set; }
-        //caratula.
+        public string Caratula { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public Juego(ICollection<Review> reviews)
         {
