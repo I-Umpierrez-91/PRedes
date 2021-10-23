@@ -1,8 +1,10 @@
+using System.Threading.Tasks;
+
 namespace Common.NetworkUtils.Interfaces
 {
     public interface INetworkStreamHandler
     {
-        void Write(byte[] data);
-        byte[] Read(int length);
+        Task Write(byte[] data);
+        Task<byte[]> Read(int length);
     }
 }

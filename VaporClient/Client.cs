@@ -7,6 +7,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VaporClient
 {
@@ -14,11 +15,11 @@ namespace VaporClient
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var isRunning = true;
             var _clientHandler = new ClientHandler();
-
+            await _clientHandler.ClientHandlerStart();
 
             while (isRunning)
             {
@@ -36,33 +37,34 @@ namespace VaporClient
                     switch (option)
                     {
                         case "0":
-                            _clientHandler.CloseConnection();
+                            await _clientHandler.CloseConnection();
                             isRunning = false;
                             break;
                         case "1":
 
-                            _clientHandler.SendRequest( CommandConstants.PublishGame, "");
+                            await _clientHandler.SendRequest( CommandConstants.PublishGame, "");
                             
                             Console.WriteLine(_clientHandler.ReadResponse());
 
                             break;
                         case "2":
 
-                            _clientHandler.SendRequest( CommandConstants.ListGames, "");
+                            await _clientHandler.SendRequest( CommandConstants.ListGames, "");
+                            var responseText = await _clientHandler.ReadResponse();
 
-                            Console.WriteLine(_clientHandler.ReadResponse());
+                            Console.WriteLine(responseText);
 
                             break;
                         case "3":
 
-                            _clientHandler.SendRequest( CommandConstants.ListGames, "");
+                            await _clientHandler.SendRequest( CommandConstants.ListGames, "");
 
                             Console.WriteLine(_clientHandler.ReadResponse());
 
                             Console.WriteLine("Ingrese el Id del juego que desea ver:");
                             var _gameId = Console.ReadLine();
 
-                            _clientHandler.SendRequest( CommandConstants.ShowGameDetails, _gameId);
+                            await _clientHandler.SendRequest( CommandConstants.ShowGameDetails, _gameId);
                             Console.WriteLine(_clientHandler.ReadResponse());
 
                             break;
@@ -74,7 +76,7 @@ namespace VaporClient
 
                 catch (Exception ex)
                 {
-                    _clientHandler.CloseConnection();
+                    await _clientHandler.CloseConnection();
                     Console.WriteLine("El servidor cerró la conexión");
                     Console.ReadLine();
                     isRunning = false;
