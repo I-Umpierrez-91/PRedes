@@ -12,3 +12,6 @@
 - Cliente - Permitir descargar imagen
 - Diagramas
 - Documentacion
+
+
+- Cambiar logs para que dependan de una variable.
