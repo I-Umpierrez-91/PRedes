@@ -8,6 +8,8 @@ namespace DomainObjects
 {
     public class Review
     {
+        public static int minNota = 1;
+        public static int maxNota = 5;
         private int _nota;
         public string Titulo { get; set; }
         public int Nota { 
@@ -15,15 +17,15 @@ namespace DomainObjects
                 return _nota;
             } set
             {
-                if (value > 5)
+                if (value > maxNota)
                 {
-                    _nota = 5;
+                    _nota = maxNota;
                 }
                 else
                 {
-                    if (value < 1)
+                    if (value < minNota)
                     {
-                        _nota = 1;
+                        _nota = minNota;
                     }
                     else
                     {

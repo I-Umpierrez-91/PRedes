@@ -82,6 +82,7 @@ namespace VaporClient
                     Console.WriteLine("2 -> Listar juegos");
                     Console.WriteLine("3 -> Detalle juego");
                     Console.WriteLine("4 -> Publicar juego");
+                    Console.WriteLine("5 -> Calificar juego");
                     Console.WriteLine("Ingrese su opcion: ");
                     var option = Console.ReadLine();
                     switch (option)
@@ -165,6 +166,21 @@ namespace VaporClient
 
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
+                            break;
+                        case "5":
+                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
+                            Console.WriteLine(await _clientHandler.ReadResponse());
+
+                            Console.WriteLine("Ingrese el Id del juego que desea calificar:");
+                            var gameIdToReivew = Console.ReadLine();
+                            Console.WriteLine("Ingrese una nota del 1 al 5:");
+                            var calification = Console.ReadLine();
+                            Console.WriteLine("Ingrese una breve nota para su review:");
+                            var reviewNotes = Console.ReadLine();
+                            var reviewRequestMessage = _username + div + gameIdToReivew + div + calification + div + reviewNotes;
+
+                            await _clientHandler.SendRequest(CommandConstants.PublishReview, reviewRequestMessage);
+                            Console.WriteLine(await _clientHandler.ReadResponse());
                             break;
                         default:
                             Console.WriteLine("Opcion invalida");

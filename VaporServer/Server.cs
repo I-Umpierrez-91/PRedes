@@ -29,6 +29,7 @@ namespace VaporServer
                 Console.WriteLine("3: Publicar un Juego");
                 Console.WriteLine("4: Administrar usuarios");
                 Console.WriteLine("5: Comprar juego");
+                Console.WriteLine("6: Calificar juego");
                 Console.WriteLine("Ingrese el número de su opción: " +
                     "");
                 var userInput = Console.ReadLine();
@@ -103,6 +104,19 @@ namespace VaporServer
                         Console.WriteLine("Ingrese el id del juego que desea comprar: ");
                         var gameIdToBuy = Console.ReadLine();
                         Console.WriteLine(_logic.BuyGame(userNameToBuy, gameIdToBuy));
+
+                        break;
+                    case "6":
+                        Console.WriteLine("Para calificar un juego, ingrese el nombre de usuario" +
+                            "Nombre: ");
+                        var userNameToReview = Console.ReadLine();
+                        Console.WriteLine("Ingrese el id del juego que desea comprar: ");
+                        var gameIdToReview = Console.ReadLine();
+                        Console.WriteLine("Ingrese una nota del 1 al 5: ");
+                        var calification = Console.ReadLine();
+                        Console.WriteLine("Ingrese una breve nota para su review: ");
+                        var reviewNotes = Console.ReadLine();
+                        Console.WriteLine(_logic.ReviewGame(userNameToReview, gameIdToReview, calification, reviewNotes));
 
                         break;
                     default:
