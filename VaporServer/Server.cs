@@ -27,6 +27,7 @@ namespace VaporServer
                 Console.WriteLine("1: Listar Juegos");
                 Console.WriteLine("2: Ver detalle de un Juego");
                 Console.WriteLine("3: Publicar un Juego");
+                Console.WriteLine("4: Administrar usuarios");
                 Console.WriteLine("Ingrese el número de su opción: " +
                     "");
                 var userInput = Console.ReadLine();
@@ -60,6 +61,39 @@ namespace VaporServer
                             path = Console.ReadLine();
                         }
                         Console.WriteLine(_logic.CreateGame(name, genre, sinopsis, path));
+                        break;
+                    case "4":
+                        Console.WriteLine("1: Alta usuario");
+                        Console.WriteLine("2: Modificar password usuario");
+                        Console.WriteLine("3: Eliminar usuario");
+                        var userInput2 = Console.ReadLine();
+                        switch (userInput2)
+                        {
+                            case "1":
+                                Console.WriteLine("Creando usuario, ingrese los siguientes datos," +
+                                    "Nombre de usuario: ");
+                                var userName = Console.ReadLine();
+                                Console.WriteLine("Password: ");
+                                var password = Console.ReadLine();
+                                Console.WriteLine(_logic.CreateUser(userName, password));
+                                break;
+                            case "2":
+                                Console.WriteLine("Modificando usuario, ingrese los siguientes datos," +
+                                    "Nombre de usuario: ");
+                                var userNameToModify = Console.ReadLine();
+                                Console.WriteLine("Nuevo password: ");
+                                var passwordToModify = Console.ReadLine();
+                                Console.WriteLine(_logic.ModifyUser(userNameToModify, passwordToModify));
+                                break;
+                            case "3":
+                                Console.WriteLine("Para eliminar un usuario, ingrese el nombre de usuario: ");
+                                var userNameToDelete = Console.ReadLine();
+                                Console.WriteLine(_logic.DeleteUser(userNameToDelete));
+                                break;
+                            default:
+                                Console.WriteLine("Opcion incorrecta ingresada");
+                                break;
+                        }
                         break;
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");

@@ -83,5 +83,59 @@ namespace VaporServer
                           select a;
             return querySelectedGame.FirstOrDefault().Caratula;
         }
+
+        public string CreateUser(string username, string password)
+        {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count() > 0)
+            {
+                return "nomre de usuario ya existe. Elija otro";
+            }
+            else
+            {
+                Usuario user = new Usuario()
+                {
+                    UserName = username,
+                    Password = password
+                };
+                _usuarios.Add(user);
+                return "usuario creado";
+            }
+        }
+
+        public string ModifyUser(string username, string password)
+        {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count()>0)
+            {
+                querySelectedUser.FirstOrDefault().Password = password;
+                return "Password actualizado.";
+            }
+            else
+            {
+                return "Username incorrecto.";
+            }
+
+        }
+
+        public string DeleteUser(string username)
+        {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count() > 0)
+            {
+                _usuarios.Remove(querySelectedUser.FirstOrDefault());
+                return "Usuario eliminado";
+            }
+            else
+            {
+                return "Usuario no encontrado";
+            }
+        }
     }
 }

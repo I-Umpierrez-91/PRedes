@@ -15,5 +15,11 @@ namespace VaporServer.Interfaces
         public abstract string CreateGame(string name, string genre, string sinopsis, string path);
 
         public abstract string GetGamePhotoPath(string idJuego);
+
+        public abstract string CreateUser(string username, string password);
+
+        public abstract string ModifyUser(string username, string password);
+
+        public abstract string DeleteUser(string username);
     }
 }

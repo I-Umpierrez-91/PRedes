@@ -9,10 +9,8 @@ namespace DomainObjects
     public class Usuario
     {
         public int Id { get; set; }
-        public ICollection<Juego> Juegos { get; set; }
-        public Usuario(ICollection<Juego> juegos)
-        {
-            Juegos = juegos;
-        }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public ICollection<Juego> Juegos { get; set; } = new List<Juego>();
     }
 }
