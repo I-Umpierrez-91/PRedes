@@ -61,9 +61,9 @@ namespace VaporServer
                             select a;
             foreach (var j in queryGameDetails)
             {
-                //TODO: Agregar excepcion
                 result = result + "Detalles del juego: \n";
                 result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
+                result = result + "Rating: \n" + j.Rating + "\n";
                 result = result + "Sinopsis: \n" + j.Sinopsis + "\n";
                 result = result + "Reviews:\n";
                 if (j.Reviews.Count == 0)
