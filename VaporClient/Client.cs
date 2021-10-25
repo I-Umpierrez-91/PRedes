@@ -25,8 +25,16 @@ namespace VaporClient
             var _clientHandler = new ClientHandler();
             var _fileHandler = new FileHandler();
             var div = HeaderConstants.Divider;
-
-            await _clientHandler.ClientHandlerStart();
+            try
+            {
+                await _clientHandler.ClientHandlerStart();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("No se pudo conectar al servidor, verifique que el servidor este corriendo. ");
+                Console.ReadLine();
+                isRunning = false;
+            }
 
             while (isRunning && !isLogged)
             {
@@ -44,7 +52,8 @@ namespace VaporClient
                     await _clientHandler.SendRequest(CommandConstants.Login, requestMessage);
 
                     var responseText = await _clientHandler.ReadResponse();
-                    if (responseText.Equals("200")) {
+                    if (responseText.Equals("200"))
+                    {
                         _username = name;
                         isLogged = true;
                     }
@@ -70,11 +79,10 @@ namespace VaporClient
                     isRunning = false;
                 }
             }
-                    while (isRunning && isLogged)
+            while (isRunning && isLogged)
             {
                 try
                 {
-                    
                     Console.WriteLine("--CLIENTE--");
                     Console.WriteLine("Opciones validas: ");
                     Console.WriteLine("0 -> Salir");
@@ -95,9 +103,6 @@ namespace VaporClient
                             break;
                         case "1":
 
-                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
-                            Console.WriteLine(await _clientHandler.ReadResponse());
-
                             Console.WriteLine("Ingrese el Id del juego que desea Comprar:");
                             await _clientHandler.SendRequest(CommandConstants.ListGames, "");
                             Console.WriteLine(await _clientHandler.ReadResponse());
@@ -106,17 +111,22 @@ namespace VaporClient
                             await _clientHandler.SendRequest(CommandConstants.PurchaseGame, _username + div + gameIdToPurchase);
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         case "2":
 
-                            await _clientHandler.SendRequest( CommandConstants.ListGames, "");
+                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
                             var responseText = await _clientHandler.ReadResponse();
                             Console.WriteLine(responseText);
-
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         case "3":
 
-                            await _clientHandler.SendRequest( CommandConstants.ListGames, "");
+                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
 
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
@@ -139,7 +149,9 @@ namespace VaporClient
                                 string workingDirectory = Environment.CurrentDirectory;
                                 Console.WriteLine(await _clientHandler.ReceiveFile());
                             }
-
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         case "4":
 
@@ -154,22 +166,24 @@ namespace VaporClient
                             while (!path.Equals(string.Empty) && !_fileHandler.FileExists(path))
                             {
                                 Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
-                                path = Console.ReadLine();
+                                path = Console.ReadLine().Replace("\"", "");
                             }
-                            
-                            var requestMessage = name + div + genre + div + sinopsis + div + 
+
+                            var requestMessage = name + div + genre + div + sinopsis + div +
                                 (path.Equals(string.Empty) ? "" : _fileHandler.GetFileName(path)) + div +
                                 (path.Equals(string.Empty) ? "" : _fileHandler.GetFileSize(path).ToString());
 
                             await _clientHandler.SendRequest(CommandConstants.PublishGame, requestMessage);
 
                             if (!path.Equals(string.Empty))
-                            {                                
+                            {
                                 await _clientHandler.SendParts(path);
                             }
 
                             Console.WriteLine(await _clientHandler.ReadResponse());
-
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         case "5":
                             await _clientHandler.SendRequest(CommandConstants.ListGames, "");
@@ -185,6 +199,10 @@ namespace VaporClient
 
                             await _clientHandler.SendRequest(CommandConstants.PublishReview, reviewRequestMessage);
                             Console.WriteLine(await _clientHandler.ReadResponse());
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
+
                             break;
                         case "6":
                             Console.WriteLine("Ingrese los filtros solicitados. \n" +
@@ -202,12 +220,16 @@ namespace VaporClient
 
                             await _clientHandler.SendRequest(CommandConstants.FilterGames, filterGamesMessage);
                             Console.WriteLine(await _clientHandler.ReadResponse());
-
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         case "7":
                             await _clientHandler.SendRequest(CommandConstants.GetUserGames, _username);
                             Console.WriteLine(await _clientHandler.ReadResponse());
-
+                            Console.WriteLine("Presione enter para continuar...");
+                            Console.ReadLine();
+                            Console.Clear();
                             break;
                         default:
                             Console.WriteLine("Opcion invalida");

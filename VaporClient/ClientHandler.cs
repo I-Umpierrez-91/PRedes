@@ -6,8 +6,6 @@ using Common.NetworkUtils;
 using Common.NetworkUtils.Interfaces;
 using ProtocolLibrary;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -23,14 +21,19 @@ namespace VaporClient
         private IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
         public async Task ClientHandlerStart()
         {
-            var clientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
+            var clientEndPoint = new IPEndPoint(IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey))
+                , int.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientPortConfigKey)));
             _tcpClient = new TcpClient(clientEndPoint);
-
-            await _tcpClient.ConnectAsync(
-                IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
-                int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey))).ConfigureAwait(false);
-            var keepConnection = true;
-
+            try
+            {
+                await _tcpClient.ConnectAsync(
+                    IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ServerIpConfigKey)),
+                    int.Parse(SettingsMgr.ReadSetting(ClientConfig.SeverPortConfigKey))).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             _networkStreamHandler = new NetworkStreamHandler(_tcpClient.GetStream());
             Console.WriteLine("Conectado al servidor");
         }
@@ -58,7 +61,7 @@ namespace VaporClient
             }
         }
 
-        public async Task< string> ReadResponse()
+        public async Task<string> ReadResponse()
         {
             var headerLength = Header.GetLength();
             byte[] buffer;
@@ -72,7 +75,7 @@ namespace VaporClient
             return result;
         }
 
-        public async Task<string > ReceiveFile()
+        public async Task<string> ReceiveFile()
         {
             string workingDirectory = Environment.CurrentDirectory;
 
@@ -85,7 +88,7 @@ namespace VaporClient
             if (int.Parse(fileSize) > 0)
             {
                 await _fileStreamHandler.ReceiveFile(fileName, int.Parse(fileSize), HeaderConstants.MaxPacketSize, _networkStreamHandler);
-               string receivePath = workingDirectory + "\\" + fileName;
+                string receivePath = workingDirectory + "\\" + fileName;
                 return "La carátula fue descargada en: " + receivePath;
             }
             else

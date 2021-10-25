@@ -26,7 +26,6 @@ namespace VaporServer
         static public IFileHandler _fileHandler = new FileHandler();
         static public IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
         private static int _clientNumber;
-        private int _isTestDataLoaded;
         private static ILogic _logic = new Logic();
         static bool _exit = false;
 
@@ -243,7 +242,7 @@ namespace VaporServer
                         case CommandConstants.GetUserGames:
                             var getUserGamesMessage = Encoding.UTF8.GetString(await networkStreamHandler.Read(header.IDataLength));
 
-                            resMessage = Encoding.UTF8.GetBytes(_logic.GetUserGames(_logic.PrintGameDetails(getUserGamesMessage)));
+                            resMessage = Encoding.UTF8.GetBytes(_logic.GetUserGames(getUserGamesMessage));
 
                             resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
                             await networkStreamHandler.Write(resHeader.GetResponse());
@@ -255,6 +254,12 @@ namespace VaporServer
                 catch (SocketException ex)
                 {
                     Console.WriteLine("El cliente " + id + " cerró la conexión");
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("El cliente se desconectó. " + ex.GetType());
                     _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
                     connected = false;
                 }
