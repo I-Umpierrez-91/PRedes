@@ -1,4 +1,6 @@
 ﻿
+using Common.FileHandler;
+using Common.FileHandler.Interfaces;
 using System;
 using System.Threading.Tasks;
 using VaporServer.Interfaces;
@@ -9,6 +11,7 @@ namespace VaporServer
     {
         static bool _exit = false;
         private static ILogic _logic = new Logic();
+        static public IFileHandler _fileHandler = new FileHandler();
         private static async Task Main()
         {
             Console.WriteLine("Iniciando servidor...");
@@ -43,7 +46,20 @@ namespace VaporServer
                         Console.WriteLine(_logic.PrintGameDetails(_gameId));
                         break;
                     case "3":
-                        _logic.CreateGame();
+                        Console.WriteLine("Creando juego, ingrese los siguientes datos," +
+                            "Nombre: ");
+                        var name = Console.ReadLine();
+                        Console.WriteLine("Genero: ");
+                        var genre = Console.ReadLine();
+                        Console.WriteLine("Sinopsis: ");
+                        var sinopsis = Console.ReadLine();
+                        string path = "No";
+                        while (!path.Equals(string.Empty) && !_fileHandler.FileExists(path))
+                        {
+                            Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
+                            path = Console.ReadLine();
+                        }
+                        Console.WriteLine(_logic.CreateGame(name, genre, sinopsis, path));
                         break;
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");

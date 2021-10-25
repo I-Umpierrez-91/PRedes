@@ -8,7 +8,8 @@
         public const int SearchGame = 4;
         public const int PublishReview = 5;
         public const int ShowGameDetails = 6;
-
+        public const int SendFile = 7;
+        public const int RequestGamePhoto = 8;
         public const int Message = 0;
     }
 }

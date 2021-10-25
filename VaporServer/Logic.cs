@@ -13,7 +13,6 @@ namespace VaporServer
         static public ICollection<Juego> _juegos = new List<Juego>();
         static public ICollection<Usuario> _usuarios = new List<Usuario>();
         static public ICollection<Review> _review = new List<Review>();
-        static public IFileHandler fileHandler = new FileHandler();
         public string PrintGameList() {
             string result = "";
             if (_juegos.Count > 0)
@@ -31,36 +30,30 @@ namespace VaporServer
             }
         }
 
-        public void CreateGame() {
-            Console.WriteLine("Creando juego, ingrese los siguientes datos," +
-                "Nombre: ");
-            var _nombre = Console.ReadLine();
-            Console.WriteLine("Genero: ");
-            var _genero = Console.ReadLine();
-            Console.WriteLine("Sinopsis: ");
-            var _sinopsis = Console.ReadLine();
-            string path = "No";           
-            while (!path.Equals(string.Empty) && !fileHandler.FileExists(path))
-            {
-                Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
-                path = Console.ReadLine();
-            }
-            var _caratula = path;
+        public string CreateGame(string name, string genre, string sinopsis, string path) {
+
             Juego newGame = new Juego(new List<Review>());
-            newGame.Nombre = _nombre;
-            newGame.Genero = _genero;
-            newGame.Sinopsis = _sinopsis;
-            newGame.Caratula = _caratula;
-            _juegos.Add(newGame);
-            Console.WriteLine("Juego creado!");
+            newGame.Nombre = name;
+            newGame.Genero = genre;
+            newGame.Sinopsis = sinopsis;
+            newGame.Caratula = path;
+            try
+            {
+                _juegos.Add(newGame);
+            }
+            catch (Exception ex)
+            {
+                return "Error al crear el juego.";
+            }
+            return "Juego creado!";
         }
 
-        public string PrintGameDetails(string idJuego) {
+        public string PrintGameDetails(string gameId) {
             string result = "";
-            var query_1 = from a in _juegos
-                            where a.Id.Equals(Int32.Parse(idJuego))
+            var queryGameDetails = from a in _juegos
+                            where a.Id.Equals(Int32.Parse(gameId))
                             select a;
-            foreach (var j in query_1)
+            foreach (var j in queryGameDetails)
             {
                 //TODO: Agregar excepcion
                 result = result + "Detalles del juego: \n";
@@ -81,6 +74,14 @@ namespace VaporServer
                 }
             }
             return result;
+        }
+
+        public string GetGamePhotoPath(string gameId)
+        {
+            var querySelectedGame = from a in _juegos
+                          where a.Id.Equals(Int32.Parse(gameId))
+                          select a;
+            return querySelectedGame.FirstOrDefault().Caratula;
         }
     }
 }
