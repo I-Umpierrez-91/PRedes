@@ -12,6 +12,7 @@
         public const int RequestGamePhoto = 8;
         public const int Login = 9;
         public const int PurchaseGame = 10;
+        public const int FilterGames = 11;
         public const int Message = 0;
     }
 }

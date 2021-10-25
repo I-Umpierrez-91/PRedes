@@ -83,6 +83,7 @@ namespace VaporClient
                     Console.WriteLine("3 -> Detalle juego");
                     Console.WriteLine("4 -> Publicar juego");
                     Console.WriteLine("5 -> Calificar juego");
+                    Console.WriteLine("6 -> Buscar juegos");
                     Console.WriteLine("Ingrese su opcion: ");
                     var option = Console.ReadLine();
                     switch (option)
@@ -181,6 +182,24 @@ namespace VaporClient
 
                             await _clientHandler.SendRequest(CommandConstants.PublishReview, reviewRequestMessage);
                             Console.WriteLine(await _clientHandler.ReadResponse());
+                            break;
+                        case "6":
+                            Console.WriteLine("Ingrese los filtros solicitados. \n" +
+                                "Si no desea filtrar por un campo, dejelo vacio. \n" +
+                                "Nombre: ");
+                            var nameFilter = Console.ReadLine();
+                            Console.WriteLine("Nota minima: ");
+                            var minRatingFilter = Console.ReadLine();
+                            Console.WriteLine("Nota maxima: ");
+                            var maxRatingFilter = Console.ReadLine();
+                            Console.WriteLine("Genero: ");
+                            var genreFilter = Console.ReadLine();
+
+                            var filterGamesMessage = nameFilter + div + minRatingFilter + div + maxRatingFilter + div + genreFilter;
+
+                            await _clientHandler.SendRequest(CommandConstants.FilterGames, filterGamesMessage);
+                            Console.WriteLine(await _clientHandler.ReadResponse());
+
                             break;
                         default:
                             Console.WriteLine("Opcion invalida");
