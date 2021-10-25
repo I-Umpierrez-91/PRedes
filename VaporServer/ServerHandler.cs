@@ -240,6 +240,15 @@ namespace VaporServer
                             await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage);
                             break;
+                        case CommandConstants.GetUserGames:
+                            var getUserGamesMessage = Encoding.UTF8.GetString(await networkStreamHandler.Read(header.IDataLength));
+
+                            resMessage = Encoding.UTF8.GetBytes(_logic.GetUserGames(_logic.PrintGameDetails(getUserGamesMessage)));
+
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
+                            break;
                     }
 
                 }

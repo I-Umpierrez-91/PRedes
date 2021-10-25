@@ -84,6 +84,7 @@ namespace VaporClient
                     Console.WriteLine("4 -> Publicar juego");
                     Console.WriteLine("5 -> Calificar juego");
                     Console.WriteLine("6 -> Buscar juegos");
+                    Console.WriteLine("7 -> Ver mis juegos");
                     Console.WriteLine("Ingrese su opcion: ");
                     var option = Console.ReadLine();
                     switch (option)
@@ -98,6 +99,8 @@ namespace VaporClient
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
                             Console.WriteLine("Ingrese el Id del juego que desea Comprar:");
+                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
+                            Console.WriteLine(await _clientHandler.ReadResponse());
                             var gameIdToPurchase = Console.ReadLine();
 
                             await _clientHandler.SendRequest(CommandConstants.PurchaseGame, _username + div + gameIdToPurchase);
@@ -198,6 +201,11 @@ namespace VaporClient
                             var filterGamesMessage = nameFilter + div + minRatingFilter + div + maxRatingFilter + div + genreFilter;
 
                             await _clientHandler.SendRequest(CommandConstants.FilterGames, filterGamesMessage);
+                            Console.WriteLine(await _clientHandler.ReadResponse());
+
+                            break;
+                        case "7":
+                            await _clientHandler.SendRequest(CommandConstants.GetUserGames, _username);
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
                             break;

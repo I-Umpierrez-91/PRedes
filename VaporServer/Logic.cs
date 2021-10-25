@@ -232,25 +232,59 @@ namespace VaporServer
 
         public string GetFilteredGames(string nameFilter, string minRatingFilter, string maxRatingFilter, string genreFilter)
         {
-            var maxRating = (maxRatingFilter.Equals(string.Empty) ? Review.maxNota : int.Parse(maxRatingFilter));
-            var minRating = (minRatingFilter.Equals(string.Empty) ? Review.minNota : int.Parse(minRatingFilter));
-            var filteredGames = _juegos.Where(j => j.Rating <= maxRating && j.Rating >= minRating);
-            if (!nameFilter.Equals(string.Empty))
+            try
             {
-                filteredGames = filteredGames.Where(j => j.Nombre.Equals(nameFilter));
+                var maxRating = (maxRatingFilter.Equals(string.Empty) ? Review.maxNota : int.Parse(maxRatingFilter));
+                var minRating = (minRatingFilter.Equals(string.Empty) ? Review.minNota : int.Parse(minRatingFilter));
+                var filteredGames = _juegos.Where(j => j.Rating <= maxRating && j.Rating >= minRating);
+                if (!nameFilter.Equals(string.Empty))
+                {
+                    filteredGames = filteredGames.Where(j => j.Nombre.Equals(nameFilter));
+                }
+                if (!genreFilter.Equals(string.Empty))
+                {
+                    filteredGames = filteredGames.Where(j => j.Genero.Equals(genreFilter));
+                }
+                if (filteredGames.Count() > 0)
+                {
+                    return PrintGameList(filteredGames);
+                }
+                else
+                {
+                    return "No hay juegos que cumplan con las condiciones.";
+                }
             }
-            if (!genreFilter.Equals(string.Empty))
+            catch (Exception ex)
             {
-                filteredGames = filteredGames.Where(j => j.Genero.Equals(genreFilter));
+
+                return "Ocurrió un problema al procesar la solicitud. Revise los parametros.";
             }
-            if (filteredGames.Count() > 0)
+        }
+
+        public string GetUserGames(string username)
+        {
+            try
             {
-                return PrintGameList(filteredGames);
+                var filteredGames = _usuarios.Where(u => u.UserName.Equals(username));
+                if (filteredGames.Count() > 0)
+                {
+                    return PrintGameList(filteredGames.FirstOrDefault().Juegos);
+                }
+                else
+                {
+                    return "No hay juegos comprados por ese usuario";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "No hay juegos que cumplan con las condiciones.";
+
+                return "Ocurrió un problema al procesar la solicitud. Revise los parametros.";
             }
+        }
+
+        public string GetGameId(string gameName)
+        {
+            return _juegos.Where(j => j.Nombre.Equals(gameName)).FirstOrDefault().Id.ToString();
         }
     }
 }
