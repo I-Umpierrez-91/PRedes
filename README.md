@@ -2,8 +2,6 @@
  
 ## Pendientes
 
-- Servidor - Adquirir juego
-- Cliente - Adquirir juego
 - Servidor - Calificar juego
 - Cliente - Calificar juego
 - Servidor - Busqueda de juegos
