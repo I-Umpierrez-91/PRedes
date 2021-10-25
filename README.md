@@ -9,7 +9,6 @@
 - Servidor - Busqueda de juegos
 - Cliente - Busqueda de juegos
 - Chequear promedio de calificaciones al ver detalle
-- Cliente - Permitir descargar imagen
 - Diagramas
 - Documentacion
 
