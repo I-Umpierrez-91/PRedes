@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VaporClient", "VaporClient\VaporClient.csproj", "{9E483C71-06D3-42DB-9789-29ACBC73BD84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolLibrary", "ProtocolLibrary\ProtocolLibrary.csproj", "{F4BDB5A8-0667-4664-8B05-3838D70D3624}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolLibrary", "ProtocolLibrary\ProtocolLibrary.csproj", "{F4BDB5A8-0667-4664-8B05-3838D70D3624}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

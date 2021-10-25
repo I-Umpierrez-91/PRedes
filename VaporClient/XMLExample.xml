@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Empresa1>
+   <Proyecto>Nombre del Proyecto 2</Proyecto>
+   <Bugs>
+      <Bug>
+         <Id>5</Id>
+         <Nombre>Error en el envío de correo</Nombre>
+         <Descripcion>El error se produce cuando el usuario no tiene un correo asignado</Descripcion>
+         <Version>1.0</Version>
+         <Estado>Activo</Estado>
+      </Bug>
+      <Bug>
+         <Id>6</Id>
+         <Nombre>Error en el envío de correo 2</Nombre>
+         <Descripcion>El error se produce cuando el usuario no tiene un correo asignado 2</Descripcion>
+         <Version>1.0</Version>
+         <Estado>Activo</Estado>
+      </Bug>
+   </Bugs>
+</Empresa1>
