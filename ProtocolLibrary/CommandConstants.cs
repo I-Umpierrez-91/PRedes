@@ -10,6 +10,7 @@
         public const int ShowGameDetails = 6;
         public const int SendFile = 7;
         public const int RequestGamePhoto = 8;
+        public const int Login = 9;
         public const int Message = 0;
     }
 }

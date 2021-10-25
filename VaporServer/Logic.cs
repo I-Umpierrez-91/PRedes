@@ -137,5 +137,19 @@ namespace VaporServer
                 return "Usuario no encontrado";
             }
         }
+
+        public bool Login(string username, string password) {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count() > 0)
+            {
+                return querySelectedUser.FirstOrDefault().Password.Equals(password);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

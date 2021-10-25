@@ -60,10 +60,61 @@ namespace VaporServer
             var id = Interlocked.Add(ref _clientNumber, 1);
             _clients.Add(client);
             var connected = true;
+            var logged = false;
             Console.WriteLine("Conectado el cliente " + id);
             var networkStreamHandler = new NetworkStreamHandler(client.GetStream());
-            
-            while (connected && !_exit)
+            while (connected && !logged && !_exit)
+            {
+                try
+                {
+                    var headerLength = Header.GetLength();
+                    byte[] buffer;
+                    buffer = await networkStreamHandler.Read(headerLength);
+                    var header = new Header();
+                    header.DecodeData(buffer);
+                    switch (header.ICommand)
+                    {
+                        case CommandConstants.Login:
+                            byte[] bufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var loginData = Encoding.UTF8.GetString(bufferData);
+                            string[] values = loginData.Split(HeaderConstants.Divider);
+
+                            string username = values[0];
+                            string password = values[1];
+
+                            var result = _logic.Login(username, password);
+                            logged = result;
+                            var resMessage = Encoding.UTF8.GetBytes("400");
+                            if (result)
+                            {
+                                resMessage = Encoding.UTF8.GetBytes("200");
+                            }
+                            var resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine("El cliente " + id + " cerró la conexión");
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error interno, cerrando la conexión. " + ex.GetType());
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
+
+            }
+
+
+            while (connected && logged && !_exit)
             {
                 try
                 {

@@ -20,12 +20,56 @@ namespace VaporClient
         static async Task Main(string[] args)
         {
             var isRunning = true;
+            var isLogged = false;
+            var _username = "";
             var _clientHandler = new ClientHandler();
             var _fileHandler = new FileHandler();
             
             await _clientHandler.ClientHandlerStart();
 
-            while (isRunning)
+            while (isRunning && !isLogged)
+            {
+                try
+                {
+                    Console.WriteLine("--CLIENTE--");
+                    Console.WriteLine("Inicio de sesion: ");
+                    Console.WriteLine("Nombre de usuario: ");
+                    var name = Console.ReadLine();
+                    Console.WriteLine("Password: ");
+                    var password = Console.ReadLine();
+
+                    var div = HeaderConstants.Divider;
+                    var requestMessage = name + div + password;
+                    await _clientHandler.SendRequest(CommandConstants.Login, requestMessage);
+
+                    var responseText = await _clientHandler.ReadResponse();
+                    if (responseText.Equals("200")) {
+                        _username = name;
+                        isLogged = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nombre de usuario o contraseña incorrectos.");
+                    }
+
+                }
+                catch (SocketException ex)
+                {
+                    await _clientHandler.CloseConnection();
+                    Console.WriteLine("El servidor cerró la conexión");
+                    Console.ReadLine();
+                    isRunning = false;
+                }
+                catch (Exception ex)
+                {
+                    await _clientHandler.CloseConnection();
+
+                    Console.WriteLine("Error interno, cerrando conexion " + ex.ToString());
+                    Console.ReadLine();
+                    isRunning = false;
+                }
+            }
+                    while (isRunning && isLogged)
             {
                 try
                 {

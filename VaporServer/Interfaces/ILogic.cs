@@ -21,5 +21,6 @@ namespace VaporServer.Interfaces
         public abstract string ModifyUser(string username, string password);
 
         public abstract string DeleteUser(string username);
+        public abstract bool Login(string username, string password);
     }
 }
