@@ -14,20 +14,26 @@ namespace VaporServer
         static public ICollection<Usuario> _usuarios = new List<Usuario>();
         static public ICollection<Review> _review = new List<Review>();
         public string PrintGameList() {
-            string result = "";
             if (_juegos.Count > 0)
             {
-                result = result + ("Listado de todos los juegos: \n");
-                foreach (var j in _juegos) {
-                    result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
-                    result = result + "Carátula: " + (string.IsNullOrEmpty(j.Caratula) ? "No se agregó carátula" : j.Caratula) + "\n";
-                }
-                return result;
+                return PrintGameList(_juegos);
             }
             else
             {
                 return "No hay juegos publicados.";
             }
+        }
+
+        public string PrintGameList(IEnumerable<Juego> games)
+        {
+            string result = "";
+            result = result + ("Listado de juegos: \n");
+            foreach (var j in _juegos)
+            {
+                result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
+                result = result + "Carátula: " + (string.IsNullOrEmpty(j.Caratula) ? "No se agregó carátula" : j.Caratula) + "\n";
+            }
+            return result;
         }
 
         public string CreateGame(string name, string genre, string sinopsis, string path) {
@@ -198,6 +204,14 @@ namespace VaporServer
                             Titulo = reviewNotes
                         };
                         queryGameDetails.FirstOrDefault().Reviews.Add(newReview);
+                        var reviews = queryGameDetails.FirstOrDefault().Reviews;
+                        float average = 0;
+                        foreach (var r in reviews)
+                        {
+                            average = average + r.Nota;
+                        }
+                        queryGameDetails.FirstOrDefault().Rating = (average / queryGameDetails.FirstOrDefault().Reviews.Count());
+
                         return ((Review.minNota <= Int32.Parse(calification)) && (Int32.Parse(calification)) <= Review.maxNota ? "" : "La nota se limitó al máximo/mínimo. ") + "El review se agregó correctamente.";
                     }
                     else
@@ -213,6 +227,29 @@ namespace VaporServer
             catch (Exception ex)
             {
                 return "Ocurrió un problema al procesar la solicitud.";
+            }
+        }
+
+        public string GetFilteredGames(string nameFilter, string minRatingFilter, string maxRatingFilter, string genreFilter)
+        {
+            var maxRating = (maxRatingFilter.Equals(string.Empty) ? Review.maxNota : int.Parse(maxRatingFilter));
+            var minRating = (minRatingFilter.Equals(string.Empty) ? Review.minNota : int.Parse(minRatingFilter));
+            var filteredGames = _juegos.Where(j => j.Rating <= maxRating && j.Rating >= minRating);
+            if (!nameFilter.Equals(string.Empty))
+            {
+                filteredGames = filteredGames.Where(j => j.Nombre.Equals(nameFilter));
+            }
+            if (!genreFilter.Equals(string.Empty))
+            {
+                filteredGames = filteredGames.Where(j => j.Genero.Equals(genreFilter));
+            }
+            if (filteredGames.Count() > 0)
+            {
+                return PrintGameList(filteredGames);
+            }
+            else
+            {
+                return "No hay juegos que cumplan con las condiciones.";
             }
         }
     }

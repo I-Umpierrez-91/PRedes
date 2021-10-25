@@ -24,5 +24,6 @@ namespace VaporServer.Interfaces
         public abstract bool Login(string username, string password);
         public abstract string BuyGame(string username, string gameId);
         public abstract string ReviewGame(string username, string gameId, string calification, string reviewNotes);
+        public abstract string GetFilteredGames(string nameFilter, string minRatingFilter, string maxRatingFilter, string genreFilter);
     }
 }

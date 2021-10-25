@@ -227,6 +227,19 @@ namespace VaporServer
                             await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage);
                             break;
+                        case CommandConstants.FilterGames:
+                            var filterMessage = Encoding.UTF8.GetString(await networkStreamHandler.Read(header.IDataLength));
+                            string[] filterValues = filterMessage.Split(HeaderConstants.Divider);
+                            var filterName = filterValues[0];
+                            var filterMinRating = filterValues[1];
+                            var filterMaxRating = filterValues[2];
+                            var filterGenre = filterValues[3];
+                            resMessage = Encoding.UTF8.GetBytes(_logic.GetFilteredGames(filterName, filterMinRating, filterMaxRating, filterGenre));
+
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
+                            break;
                     }
 
                 }
