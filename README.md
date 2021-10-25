@@ -2,7 +2,6 @@
  
 ## Pendientes
 
-- Chequear promedio de calificaciones al ver detalle
 - Diagramas
 - Documentacion
 
