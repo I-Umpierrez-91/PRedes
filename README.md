@@ -2,10 +2,9 @@
  
 ## Pendientes
 
-- Servidor - Calificar juego
-- Cliente - Calificar juego
 - Servidor - Busqueda de juegos
 - Cliente - Busqueda de juegos
+- Juegos adquiridos por el usuario
 - Chequear promedio de calificaciones al ver detalle
 - Diagramas
 - Documentacion
