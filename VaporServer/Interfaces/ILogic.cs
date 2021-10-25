@@ -22,7 +22,7 @@ namespace VaporServer.Interfaces
 
         public abstract string DeleteUser(string username);
         public abstract bool Login(string username, string password);
-
         public abstract string BuyGame(string username, string gameId);
+        public abstract string ReviewGame(string username, string gameId, string calification, string reviewNotes);
     }
 }

@@ -214,6 +214,19 @@ namespace VaporServer
                             await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage);
                             break;
+                        case CommandConstants.PublishReview:
+                            var reviewMessage = Encoding.UTF8.GetString(await networkStreamHandler.Read(header.IDataLength));
+                            string[] reviewValues = reviewMessage.Split(HeaderConstants.Divider);
+                            var reviewerUserName = reviewValues[0];
+                            var reviewGameId = reviewValues[1];
+                            var reviewCalification = reviewValues[2];
+                            var reviewNotes = reviewValues[3];
+                            resMessage = Encoding.UTF8.GetBytes(_logic.ReviewGame(reviewerUserName, reviewGameId, reviewCalification, reviewNotes));
+
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
+                            break;
                     }
 
                 }

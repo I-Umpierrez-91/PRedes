@@ -177,5 +177,43 @@ namespace VaporServer
                 return "El usuario no existe";
             }
         }
+
+        public string ReviewGame(string username, string gameId, string calification, string reviewNotes)
+        {
+            try
+            {
+                var querySelectedUser = from a in _usuarios
+                                        where a.UserName.Equals(username)
+                                        select a;
+                if (querySelectedUser.Count() > 0)
+                {
+                    var queryGameDetails = from a in _juegos
+                                           where a.Id.Equals(Int32.Parse(gameId))
+                                           select a;
+                    if (queryGameDetails.Count() > 0)
+                    {
+                        Review newReview = new Review()
+                        {
+                            Nota = Int32.Parse(calification),
+                            Titulo = reviewNotes
+                        };
+                        queryGameDetails.FirstOrDefault().Reviews.Add(newReview);
+                        return ((Review.minNota <= Int32.Parse(calification)) && (Int32.Parse(calification)) <= Review.maxNota ? "" : "La nota se limitó al máximo/mínimo. ") + "El review se agregó correctamente.";
+                    }
+                    else
+                    {
+                        return "El juego no existe";
+                    }
+                }
+                else
+                {
+                    return "El usuario no existe";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "Ocurrió un problema al procesar la solicitud.";
+            }
+        }
     }
 }
