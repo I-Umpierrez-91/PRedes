@@ -27,13 +27,3 @@ C:\Users\Caruso\source\repos\Obligatorio\Common\obj\Debug\netcoreapp3.1\Common.A
 C:\Users\Caruso\source\repos\Obligatorio\Common\obj\Debug\netcoreapp3.1\Common.csproj.CoreCompileInputs.cache
 C:\Users\Caruso\source\repos\Obligatorio\Common\obj\Debug\netcoreapp3.1\Common.dll
 C:\Users\Caruso\source\repos\Obligatorio\Common\obj\Debug\netcoreapp3.1\Common.pdb
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\bin\Debug\netcoreapp3.1\Common.deps.json
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\bin\Debug\netcoreapp3.1\Common.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\bin\Debug\netcoreapp3.1\Common.pdb
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.csproj.AssemblyReference.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfoInputs.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.AssemblyInfo.cs
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.csproj.CoreCompileInputs.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\Common\obj\Debug\netcoreapp3.1\Common.pdb

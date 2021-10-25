@@ -164,7 +164,6 @@ namespace VaporServer
                             {
                                 path = workingDirectory + "\\" + filename;
                                 await _fileStreamHandler.ReceiveFile(values[3], int.Parse(values[4]), HeaderConstants.MaxPacketSize, networkStreamHandler);
-
                             }
 
                             var resMessage3 = Encoding.UTF8.GetBytes(_logic.CreateGame(name, genre, sinopsis, path)) ;
