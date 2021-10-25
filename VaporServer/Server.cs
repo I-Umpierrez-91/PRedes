@@ -45,12 +45,18 @@ namespace VaporServer
                         break;
                     case "1":
                         Console.WriteLine(_logic.PrintGameList());
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "2":
                         Console.WriteLine(_logic.PrintGameList());
                         Console.WriteLine("Ingrese el Id del juego que desea ver:");
                         var _gameId = Console.ReadLine();
                         Console.WriteLine(_logic.PrintGameDetails(_gameId));
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "3":
                         Console.WriteLine("Creando juego, ingrese los siguientes datos," +
@@ -64,9 +70,12 @@ namespace VaporServer
                         while (!path.Equals(string.Empty) && !_fileHandler.FileExists(path))
                         {
                             Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
-                            path = Console.ReadLine();
+                            path = Console.ReadLine().Replace("\"", "");
                         }
                         Console.WriteLine(_logic.CreateGame(name, genre, sinopsis, path));
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "4":
                         Console.WriteLine("1: Alta usuario");
@@ -100,6 +109,9 @@ namespace VaporServer
                                 Console.WriteLine("Opcion incorrecta ingresada");
                                 break;
                         }
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "5":
                         Console.WriteLine("Para comprar un juego, ingrese el nombre de usuario \n" +
@@ -109,7 +121,9 @@ namespace VaporServer
                         Console.WriteLine(_logic.PrintGameList());
                         var gameIdToBuy = Console.ReadLine();
                         Console.WriteLine(_logic.BuyGame(userNameToBuy, gameIdToBuy));
-
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "6":
                         Console.WriteLine("Para calificar un juego, ingrese el nombre de usuario \n" +
@@ -122,7 +136,9 @@ namespace VaporServer
                         Console.WriteLine("Ingrese una breve nota para su review: ");
                         var reviewNotes = Console.ReadLine();
                         Console.WriteLine(_logic.ReviewGame(userNameToReview, gameIdToReview, calification, reviewNotes));
-
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "7":
                         Console.WriteLine("Para buscar un juego, ingrese los filtros solicitados. \n" +
@@ -137,7 +153,9 @@ namespace VaporServer
                         var genreFilter = Console.ReadLine();
 
                         Console.WriteLine(_logic.GetFilteredGames(nameFilter, minRatingFilter, maxRatingFilter, genreFilter));
-
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "8":
                         Console.WriteLine("Para ver los juegos de un usuario, ingrese el nombre de usuario \n" +
@@ -145,18 +163,24 @@ namespace VaporServer
                         var userNameToGetGames = Console.ReadLine();
 
                         Console.WriteLine(_logic.GetUserGames(userNameToGetGames));
-
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     case "99":
                         if (!testDataLoaded)
                         {
                             TestData.LoadTestData(_logic);
                             testDataLoaded = true;
+                            Console.WriteLine("Datos de prueba cargados");
                         }
                         else
                         {
                             Console.WriteLine( "Ya cargaste los datos de test ;)");
                         }
+                        Console.WriteLine("Presione enter para continuar...");
+                        Console.ReadLine();
+                        Console.Clear();
                         break;
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");

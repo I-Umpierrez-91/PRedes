@@ -1,6 +1,4 @@
-﻿using Common.FileHandler;
-using Common.FileHandler.Interfaces;
-using DomainObjects;
+﻿using DomainObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,16 +26,16 @@ namespace VaporServer
         {
             string result = "";
             result = result + ("Listado de juegos: \n");
-            foreach (var j in _juegos)
+            foreach (var j in games)
             {
-                result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
+                result = result + "Id: " + j.Id.ToString() + "\n" + " Nombre: " + j.Nombre + "\n" + " Género: " + j.Genero + "\n" + " Rating: " + j.Rating + "\n";
                 result = result + "Carátula: " + (string.IsNullOrEmpty(j.Caratula) ? "No se agregó carátula" : j.Caratula) + "\n";
             }
             return result;
         }
 
-        public string CreateGame(string name, string genre, string sinopsis, string path) {
-
+        public string CreateGame(string name, string genre, string sinopsis, string path) 
+        {
             Juego newGame = new Juego(new List<Review>());
             newGame.Nombre = name;
             newGame.Genero = genre;
@@ -45,11 +43,14 @@ namespace VaporServer
             newGame.Caratula = path;
             try
             {
-                _juegos.Add(newGame);
+                lock(_juegos)
+                {
+                    _juegos.Add(newGame);
+                }
             }
             catch (Exception ex)
             {
-                return "Error al crear el juego.";
+                return "Error al crear el juego. " + ex.GetType();
             }
             return "Juego creado!";
         }
@@ -62,9 +63,10 @@ namespace VaporServer
             foreach (var j in queryGameDetails)
             {
                 result = result + "Detalles del juego: \n";
-                result = result + "Id: " + j.Id.ToString() + " Nombre: " + j.Nombre + " Género: " + j.Genero + "\n";
-                result = result + "Rating: \n" + j.Rating + "\n";
-                result = result + "Sinopsis: \n" + j.Sinopsis + "\n";
+                result = result + "Id: " + j.Id.ToString() + "\n" + " Nombre: " + j.Nombre + "\n" + " Género: " + j.Genero + "\n" + "\n";
+                result = result + "Rating: " + j.Rating + "\n";
+                result = result + "Carátula: " + (string.IsNullOrEmpty(j.Caratula) ? "No se agregó carátula" : j.Caratula) + "\n" + "\n";
+                result = result + "Sinopsis: \n" + j.Sinopsis + "\n" + "\n";
                 result = result + "Reviews:\n";
                 if (j.Reviews.Count == 0)
                 {
@@ -75,7 +77,7 @@ namespace VaporServer
                     foreach (var r in j.Reviews)
                     {
                         result = result + "Titulo: " + r.Titulo + "\n";
-                        result = result + r.Nota.ToString() + "\n";
+                        result = result + "Nota: " + r.Nota.ToString() + "\n" + "\n";
                     }
                 }
             }
@@ -92,22 +94,25 @@ namespace VaporServer
 
         public string CreateUser(string username, string password)
         {
-            var querySelectedUser = from a in _usuarios
-                                    where a.UserName.Equals(username)
-                                    select a;
-            if (querySelectedUser.Count() > 0)
+            lock(_usuarios)
             {
-                return "nomre de usuario ya existe. Elija otro";
-            }
-            else
-            {
-                Usuario user = new Usuario()
+                var querySelectedUser = from a in _usuarios
+                                        where a.UserName.Equals(username)
+                                        select a;
+                if (querySelectedUser.Count() > 0)
                 {
-                    UserName = username,
-                    Password = password
-                };
-                _usuarios.Add(user);
-                return "usuario creado";
+                    return "nomre de usuario ya existe. Elija otro";
+                }
+                else
+                {
+                    Usuario user = new Usuario()
+                    {
+                        UserName = username,
+                        Password = password
+                    };
+                    _usuarios.Add(user);
+                    return "usuario creado";
+                }
             }
         }
 
@@ -118,7 +123,10 @@ namespace VaporServer
                                     select a;
             if (querySelectedUser.Count()>0)
             {
-                querySelectedUser.FirstOrDefault().Password = password;
+                lock(_usuarios)
+                {
+                    querySelectedUser.FirstOrDefault().Password = password;
+                }
                 return "Password actualizado.";
             }
             else
@@ -130,17 +138,20 @@ namespace VaporServer
 
         public string DeleteUser(string username)
         {
-            var querySelectedUser = from a in _usuarios
-                                    where a.UserName.Equals(username)
-                                    select a;
-            if (querySelectedUser.Count() > 0)
+            lock(_usuarios)
             {
-                _usuarios.Remove(querySelectedUser.FirstOrDefault());
-                return "Usuario eliminado";
-            }
-            else
-            {
-                return "Usuario no encontrado";
+                var querySelectedUser = from a in _usuarios
+                                        where a.UserName.Equals(username)
+                                        select a;
+                if (querySelectedUser.Count() > 0)
+                {
+                    _usuarios.Remove(querySelectedUser.FirstOrDefault());
+                    return "Usuario eliminado";
+                }
+                else
+                {
+                    return "Usuario no encontrado";
+                }
             }
         }
 
@@ -160,27 +171,47 @@ namespace VaporServer
 
         public string BuyGame(string username, string gameId)
         {
-            var querySelectedUser = from a in _usuarios
-                                    where a.UserName.Equals(username)
-                                    select a;
-            if (querySelectedUser.Count() > 0)
+            try
             {
-                var queryGameDetails = from a in _juegos
-                                       where a.Id.Equals(Int32.Parse(gameId))
-                                       select a;
-                if (queryGameDetails.Count() > 0)
+                var querySelectedUser = from a in _usuarios
+                                        where a.UserName.Equals(username)
+                                        select a;
+                if (querySelectedUser.Count() > 0)
                 {
-                    querySelectedUser.FirstOrDefault().Juegos.Add(queryGameDetails.FirstOrDefault());
-                    return "Juego agregado al usuario";
+                    var queryGameDetails = from a in _juegos
+                                           where a.Id.Equals(Int32.Parse(gameId))
+                                           select a;
+                    if (queryGameDetails.Count() > 0)
+                    {
+                        var userGames = querySelectedUser.FirstOrDefault().Juegos.Where(j => 
+                            j.Id == queryGameDetails.FirstOrDefault().Id);
+                        if (userGames.Count() > 0)
+                        {
+                            return "El usuario ya posee el juego";
+                        }
+                        else
+                        {
+                            lock (querySelectedUser.FirstOrDefault())
+                            {
+                                querySelectedUser.FirstOrDefault().Juegos.Add(queryGameDetails.FirstOrDefault());
+                            }
+                            return "Juego agregado al usuario";
+                        }
+                    }
+                    else
+                    {
+                        return "El juego no existe";
+                    }
                 }
                 else
                 {
-                    return "El juego no existe";
-                } 
+                    return "El usuario no existe";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "El usuario no existe";
+
+                return "Ocurrió un problema al procesar la solicitud. Revise los parametros " + ex.GetType();
             }
         }
 
@@ -226,7 +257,7 @@ namespace VaporServer
             }
             catch (Exception ex)
             {
-                return "Ocurrió un problema al procesar la solicitud.";
+                return "Ocurrió un problema al procesar la solicitud. " + ex.GetType();
             }
         }
 
@@ -257,7 +288,7 @@ namespace VaporServer
             catch (Exception ex)
             {
 
-                return "Ocurrió un problema al procesar la solicitud. Revise los parametros.";
+                return "Ocurrió un problema al procesar la solicitud. Revise los parametros. " + ex.GetType();
             }
         }
 
@@ -265,10 +296,10 @@ namespace VaporServer
         {
             try
             {
-                var filteredGames = _usuarios.Where(u => u.UserName.Equals(username));
-                if (filteredGames.Count() > 0)
+                var filteredUser = _usuarios.Where(u => u.UserName.Equals(username));
+                if (filteredUser.Count() > 0)
                 {
-                    return PrintGameList(filteredGames.FirstOrDefault().Juegos);
+                    return PrintGameList(filteredUser.FirstOrDefault().Juegos);
                 }
                 else
                 {
@@ -277,8 +308,7 @@ namespace VaporServer
             }
             catch (Exception ex)
             {
-
-                return "Ocurrió un problema al procesar la solicitud. Revise los parametros.";
+                return "Ocurrió un problema al procesar la solicitud. Revise los parametros. " + ex.GetType();
             }
         }
 
