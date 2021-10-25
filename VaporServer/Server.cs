@@ -16,6 +16,7 @@ namespace VaporServer
         {
             Console.WriteLine("Iniciando servidor...");
             var _serverHandler = new ServerHandler();
+            bool testDataLoaded = false;
             var startup = Task.Run(() =>_serverHandler.ServerHandlerStart());
             Console.WriteLine("Esperando a nuevos clientes...");
             Console.WriteLine("Bienvenido al Sistema Server");
@@ -31,6 +32,8 @@ namespace VaporServer
                 Console.WriteLine("5: Comprar juego");
                 Console.WriteLine("6: Calificar juego");
                 Console.WriteLine("7: Buscar juegos");
+                Console.WriteLine("8: Ver juegos de usuario");
+                Console.WriteLine("99: Cargar datos de prueba");
                 Console.WriteLine("Ingrese el número de su opción: " +
                     "");
                 var userInput = Console.ReadLine();
@@ -103,6 +106,7 @@ namespace VaporServer
                             "Nombre: ");
                         var userNameToBuy = Console.ReadLine();
                         Console.WriteLine("Ingrese el id del juego que desea comprar: ");
+                        Console.WriteLine(_logic.PrintGameList());
                         var gameIdToBuy = Console.ReadLine();
                         Console.WriteLine(_logic.BuyGame(userNameToBuy, gameIdToBuy));
 
@@ -134,6 +138,25 @@ namespace VaporServer
 
                         Console.WriteLine(_logic.GetFilteredGames(nameFilter, minRatingFilter, maxRatingFilter, genreFilter));
 
+                        break;
+                    case "8":
+                        Console.WriteLine("Para ver los juegos de un usuario, ingrese el nombre de usuario \n" +
+                            "Nombre: ");
+                        var userNameToGetGames = Console.ReadLine();
+
+                        Console.WriteLine(_logic.GetUserGames(userNameToGetGames));
+
+                        break;
+                    case "99":
+                        if (!testDataLoaded)
+                        {
+                            TestData.LoadTestData(_logic);
+                            testDataLoaded = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine( "Ya cargaste los datos de test ;)");
+                        }
                         break;
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");
