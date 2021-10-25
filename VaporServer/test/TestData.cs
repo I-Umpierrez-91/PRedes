@@ -13,7 +13,6 @@ namespace VaporServer
         {
             string workingDirectory = Environment.CurrentDirectory;
 
-            Console.WriteLine(workingDirectory);
             if (workingDirectory.Contains("bin\\Debug\\net5.0"))
             {
                 workingDirectory = workingDirectory.Replace("bin\\Debug\\net5.0", "test\\");
@@ -22,7 +21,6 @@ namespace VaporServer
             {
                 workingDirectory = workingDirectory + "\\test\\";
             }
-            Console.WriteLine(workingDirectory);
 
             _logic.CreateGame("Paper Mario", "Arcade", "Sin ser uno de los grandes juegos de Nintendo, lo cierto es que este Paper Mario: The Origami King ha resultado ser un juego divertidísimo y con un encanto especial. Está lleno de buenos diálogos y chistes, las mazmorras molan un montón y los enfrentamientos con los jefes finales son tremendos. Que sus primeros pasos no te desanimen, el viaje vale mucho la pena.", workingDirectory + "PaperMario.jpeg");
             _logic.CreateGame("Microsoft Flight Simulator", "Simulador", "Los amantes de los simuladores de vuelo han estado de enhorabuena este año: Microsoft Flight Simulator es todo lo que se podía esperar de él y algo más, lo cual no está nada mal para una saga que lleva casi cuatro décadas ofreciendo algo que prácticamente nadie más ofrece.", workingDirectory + "FlightSimulator.jpeg");
