@@ -28,6 +28,7 @@ namespace VaporServer
                 Console.WriteLine("2: Ver detalle de un Juego");
                 Console.WriteLine("3: Publicar un Juego");
                 Console.WriteLine("4: Administrar usuarios");
+                Console.WriteLine("5: Comprar juego");
                 Console.WriteLine("Ingrese el número de su opción: " +
                     "");
                 var userInput = Console.ReadLine();
@@ -94,6 +95,15 @@ namespace VaporServer
                                 Console.WriteLine("Opcion incorrecta ingresada");
                                 break;
                         }
+                        break;
+                    case "5":
+                        Console.WriteLine("Para comprar un juego, ingrese el nombre de usuario" +
+                            "Nombre: ");
+                        var userNameToBuy = Console.ReadLine();
+                        Console.WriteLine("Ingrese el id del juego que desea comprar: ");
+                        var gameIdToBuy = Console.ReadLine();
+                        Console.WriteLine(_logic.BuyGame(userNameToBuy, gameIdToBuy));
+
                         break;
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");

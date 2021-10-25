@@ -10,7 +10,7 @@ namespace VaporServer.Interfaces
     {
         public abstract string PrintGameList();
 
-        public abstract string PrintGameDetails(string idJuego);
+        public abstract string PrintGameDetails(string gameId);
 
         public abstract string CreateGame(string name, string genre, string sinopsis, string path);
 
@@ -21,5 +21,8 @@ namespace VaporServer.Interfaces
         public abstract string ModifyUser(string username, string password);
 
         public abstract string DeleteUser(string username);
+        public abstract bool Login(string username, string password);
+
+        public abstract string BuyGame(string username, string gameId);
     }
 }

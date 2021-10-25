@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporServer\\VaporServer.csproj": {}
+    "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\vaporserver\\VaporServer.csproj": {}
   },
   "projects": {
     "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\Common\\Common.csproj": {
@@ -172,14 +172,14 @@
         }
       }
     },
-    "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporServer\\VaporServer.csproj": {
+    "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\vaporserver\\VaporServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporServer\\VaporServer.csproj",
+        "projectUniqueName": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\vaporserver\\VaporServer.csproj",
         "projectName": "VaporServer",
-        "projectPath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporServer\\VaporServer.csproj",
+        "projectPath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\vaporserver\\VaporServer.csproj",
         "packagesPath": "C:\\Users\\Caruso\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\VaporServer\\obj\\",
+        "outputPath": "C:\\Users\\Caruso\\source\\repos\\Obligatorio\\PRedes\\vaporserver\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Caruso\\AppData\\Roaming\\NuGet\\NuGet.Config",

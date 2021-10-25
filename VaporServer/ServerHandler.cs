@@ -60,10 +60,10 @@ namespace VaporServer
             var id = Interlocked.Add(ref _clientNumber, 1);
             _clients.Add(client);
             var connected = true;
+            var logged = false;
             Console.WriteLine("Conectado el cliente " + id);
             var networkStreamHandler = new NetworkStreamHandler(client.GetStream());
-            
-            while (connected && !_exit)
+            while (connected && !logged && !_exit)
             {
                 try
                 {
@@ -71,6 +71,57 @@ namespace VaporServer
                     byte[] buffer;
                     buffer = await networkStreamHandler.Read(headerLength);
                     var header = new Header();
+                    header.DecodeData(buffer);
+                    switch (header.ICommand)
+                    {
+                        case CommandConstants.Login:
+                            byte[] bufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var loginData = Encoding.UTF8.GetString(bufferData);
+                            string[] values = loginData.Split(HeaderConstants.Divider);
+
+                            string username = values[0];
+                            string password = values[1];
+
+                            var result = _logic.Login(username, password);
+                            logged = result;
+                            var resMessage = Encoding.UTF8.GetBytes("400");
+                            if (result)
+                            {
+                                resMessage = Encoding.UTF8.GetBytes("200");
+                            }
+                            var resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine("El cliente " + id + " cerró la conexión");
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error interno, cerrando la conexión. " + ex.GetType());
+                    _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
+                    connected = false;
+                }
+
+            }
+
+            while (connected && logged && !_exit)
+            {
+                try
+                {
+                    var headerLength = Header.GetLength();
+                    byte[] buffer;
+                    buffer = await networkStreamHandler.Read(headerLength);
+                    var header = new Header();
+                    byte[] resMessage;
                     Header resHeader;
                     header.DecodeData(buffer);
                     switch (header.ICommand)
@@ -78,13 +129,13 @@ namespace VaporServer
                         case CommandConstants.ListGames:
                             Console.WriteLine("El cliente idicó que quiere ver la lista de juegos");
 
-                            var resMessage = Encoding.UTF8.GetBytes(_logic.PrintGameList());
+                            resMessage = Encoding.UTF8.GetBytes(_logic.PrintGameList());
                             resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
                             await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage);
                             break;
                         case CommandConstants.ShowGameDetails:                            
-                            byte[] bufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var bufferData = await networkStreamHandler.Read(header.IDataLength);
                             var resMessage2 = Encoding.UTF8.GetBytes(_logic.PrintGameDetails(Encoding.UTF8.GetString(bufferData)));
 
                             Console.WriteLine("El cliente idicó que quiere ver el juego con id " + Encoding.UTF8.GetString(bufferData));
@@ -113,13 +164,12 @@ namespace VaporServer
                             {
                                 path = workingDirectory + "\\" + filename;
                                 await _fileStreamHandler.ReceiveFile(values[3], int.Parse(values[4]), HeaderConstants.MaxPacketSize, networkStreamHandler);
-
                             }
 
-                            var resMessage3 = Encoding.UTF8.GetBytes(_logic.CreateGame(name, genre, sinopsis, path)) ;
-                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage3.Length);
+                            resMessage = Encoding.UTF8.GetBytes(_logic.CreateGame(name, genre, sinopsis, path)) ;
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
                             await networkStreamHandler.Write(resHeader.GetResponse());
-                            await networkStreamHandler.Write(resMessage3);
+                            await networkStreamHandler.Write(resMessage);
 
 
                             break;
@@ -152,6 +202,17 @@ namespace VaporServer
                                 await networkStreamHandler.Write(i);
                             }
 
+                            break;
+                        case CommandConstants.PurchaseGame:
+                            var purchaseMessage = Encoding.UTF8.GetString(await networkStreamHandler.Read(header.IDataLength));
+                            string[] purchaseValues = purchaseMessage.Split(HeaderConstants.Divider);
+                            var purchaserUserName = purchaseValues[0];
+                            var purchaseGameId = purchaseValues[1];
+                            resMessage = Encoding.UTF8.GetBytes(_logic.BuyGame(purchaserUserName, purchaseGameId));
+
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage);
                             break;
                     }
 

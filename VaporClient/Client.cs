@@ -20,12 +20,57 @@ namespace VaporClient
         static async Task Main(string[] args)
         {
             var isRunning = true;
+            var isLogged = false;
+            var _username = "";
             var _clientHandler = new ClientHandler();
             var _fileHandler = new FileHandler();
-            
+            var div = HeaderConstants.Divider;
+
             await _clientHandler.ClientHandlerStart();
 
-            while (isRunning)
+            while (isRunning && !isLogged)
+            {
+                try
+                {
+                    Console.WriteLine("--CLIENTE--");
+                    Console.WriteLine("Inicio de sesion: ");
+                    Console.WriteLine("Nombre de usuario: ");
+                    var name = Console.ReadLine();
+                    Console.WriteLine("Password: ");
+                    var password = Console.ReadLine();
+
+                    div = HeaderConstants.Divider;
+                    var requestMessage = name + div + password;
+                    await _clientHandler.SendRequest(CommandConstants.Login, requestMessage);
+
+                    var responseText = await _clientHandler.ReadResponse();
+                    if (responseText.Equals("200")) {
+                        _username = name;
+                        isLogged = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nombre de usuario o contraseña incorrectos.");
+                    }
+
+                }
+                catch (SocketException ex)
+                {
+                    await _clientHandler.CloseConnection();
+                    Console.WriteLine("El servidor cerró la conexión");
+                    Console.ReadLine();
+                    isRunning = false;
+                }
+                catch (Exception ex)
+                {
+                    await _clientHandler.CloseConnection();
+
+                    Console.WriteLine("Error interno, cerrando conexion " + ex.ToString());
+                    Console.ReadLine();
+                    isRunning = false;
+                }
+            }
+                    while (isRunning && isLogged)
             {
                 try
                 {
@@ -33,7 +78,7 @@ namespace VaporClient
                     Console.WriteLine("--CLIENTE--");
                     Console.WriteLine("Opciones validas: ");
                     Console.WriteLine("0 -> Salir");
-                    //Console.WriteLine("1 -> Publicar juego");
+                    Console.WriteLine("1 -> Comprar juego");
                     Console.WriteLine("2 -> Listar juegos");
                     Console.WriteLine("3 -> Detalle juego");
                     Console.WriteLine("4 -> Publicar juego");
@@ -47,8 +92,13 @@ namespace VaporClient
                             break;
                         case "1":
 
-                            await _clientHandler.SendRequest( CommandConstants.PublishGame, "");
-                            
+                            await _clientHandler.SendRequest(CommandConstants.ListGames, "");
+                            Console.WriteLine(await _clientHandler.ReadResponse());
+
+                            Console.WriteLine("Ingrese el Id del juego que desea Comprar:");
+                            var gameIdToPurchase = Console.ReadLine();
+
+                            await _clientHandler.SendRequest(CommandConstants.PurchaseGame, _username + div + gameIdToPurchase);
                             Console.WriteLine(await _clientHandler.ReadResponse());
 
                             break;
@@ -101,7 +151,7 @@ namespace VaporClient
                                 Console.WriteLine("Ingrese un path válido para la carátula (Si no quiere agregar carátula deje el campo vacío): ");
                                 path = Console.ReadLine();
                             }
-                            var div = HeaderConstants.Divider;
+                            
                             var requestMessage = name + div + genre + div + sinopsis + div + 
                                 (path.Equals(string.Empty) ? "" : _fileHandler.GetFileName(path)) + div +
                                 (path.Equals(string.Empty) ? "" : _fileHandler.GetFileSize(path).ToString());

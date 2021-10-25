@@ -137,5 +137,45 @@ namespace VaporServer
                 return "Usuario no encontrado";
             }
         }
+
+        public bool Login(string username, string password) {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count() > 0)
+            {
+                return querySelectedUser.FirstOrDefault().Password.Equals(password);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string BuyGame(string username, string gameId)
+        {
+            var querySelectedUser = from a in _usuarios
+                                    where a.UserName.Equals(username)
+                                    select a;
+            if (querySelectedUser.Count() > 0)
+            {
+                var queryGameDetails = from a in _juegos
+                                       where a.Id.Equals(Int32.Parse(gameId))
+                                       select a;
+                if (queryGameDetails.Count() > 0)
+                {
+                    querySelectedUser.FirstOrDefault().Juegos.Add(queryGameDetails.FirstOrDefault());
+                    return "Juego agregado al usuario";
+                }
+                else
+                {
+                    return "El juego no existe";
+                } 
+            }
+            else
+            {
+                return "El usuario no existe";
+            }
+        }
     }
 }

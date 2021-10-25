@@ -10,15 +10,3 @@ C:\Users\Caruso\source\repos\Obligatorio\DomainObjects\obj\Debug\net5.0\DomainOb
 C:\Users\Caruso\source\repos\Obligatorio\DomainObjects\obj\Debug\net5.0\DomainObjects.dll
 C:\Users\Caruso\source\repos\Obligatorio\DomainObjects\obj\Debug\net5.0\ref\DomainObjects.dll
 C:\Users\Caruso\source\repos\Obligatorio\DomainObjects\obj\Debug\net5.0\DomainObjects.pdb
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\bin\Debug\net5.0\DomainObjects.deps.json
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\bin\Debug\net5.0\DomainObjects.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\bin\Debug\net5.0\ref\DomainObjects.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\bin\Debug\net5.0\DomainObjects.pdb
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.csproj.AssemblyReference.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.AssemblyInfoInputs.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.AssemblyInfo.cs
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.csproj.CoreCompileInputs.cache
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\ref\DomainObjects.dll
-C:\Users\Caruso\source\repos\Obligatorio\PRedes\DomainObjects\obj\Debug\net5.0\DomainObjects.pdb
