@@ -1,4 +1,6 @@
 ﻿using Common;
+using Common.FileHandler;
+using Common.FileHandler.Interfaces;
 using Common.Interfaces;
 using Common.NetworkUtils;
 using Common.NetworkUtils.Interfaces;
@@ -6,6 +8,7 @@ using ProtocolLibrary;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -20,15 +23,15 @@ namespace VaporServer
     {
         private readonly ISettingsManager SettingsMgr = new SettingsManager();
         static BlockingCollection<TcpClient> _clients = new BlockingCollection<TcpClient>();
+        static public IFileHandler _fileHandler = new FileHandler();
+        static public IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
         private static int _clientNumber;
         private int _isTestDataLoaded;
         private static ILogic _logic = new Logic();
         static bool _exit = false;
-        private Socket _server;
 
         public async Task ServerHandlerStart()
         {
-            _server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var localEp = new IPEndPoint(
                 IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
                 int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey)));
@@ -50,7 +53,6 @@ namespace VaporServer
                 client.Dispose();
                 client.Close();
             }
-            _server.Close(0);
         }
 
         private static async Task HandleClient(TcpClient client)
@@ -60,7 +62,7 @@ namespace VaporServer
             var connected = true;
             Console.WriteLine("Conectado el cliente " + id);
             var networkStreamHandler = new NetworkStreamHandler(client.GetStream());
-            //var networkStream = new NetworkStream(client);
+            
             while (connected && !_exit)
             {
                 try
@@ -69,6 +71,7 @@ namespace VaporServer
                     byte[] buffer;
                     buffer = await networkStreamHandler.Read(headerLength);
                     var header = new Header();
+                    Header resHeader;
                     header.DecodeData(buffer);
                     switch (header.ICommand)
                     {
@@ -76,7 +79,7 @@ namespace VaporServer
                             Console.WriteLine("El cliente idicó que quiere ver la lista de juegos");
 
                             var resMessage = Encoding.UTF8.GetBytes(_logic.PrintGameList());
-                            var resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage.Length);
                             await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage);
                             break;
@@ -86,12 +89,71 @@ namespace VaporServer
 
                             Console.WriteLine("El cliente idicó que quiere ver el juego con id " + Encoding.UTF8.GetString(bufferData));
 
-                            var resHeader2 = new Header(HeaderConstants.Response, CommandConstants.Message, HeaderConstants.DataLength);
-                            await networkStreamHandler.Write(resHeader2.GetResponse());
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage2.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
                             await networkStreamHandler.Write(resMessage2);
                             break;
-                    }
+                        case CommandConstants.PublishGame:
+                            Console.WriteLine("El cliente idicó que quiere publicar un juego");
 
+                            byte[] publishBufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var publishMessage = Encoding.UTF8.GetString(publishBufferData);
+                            string[] values = publishMessage.Split(HeaderConstants.Divider);
+
+                            string name = values[0];
+                            string genre = values[1];
+                            string sinopsis = values[2];
+                            string filename = values[3];
+                            string fileSize = values[4];
+
+                            string workingDirectory = Environment.CurrentDirectory;
+
+                            string path = "";
+                            if (!values[3].Equals(string.Empty))
+                            {
+                                path = workingDirectory + "\\" + filename;
+                                await _fileStreamHandler.ReceiveFile(values[3], int.Parse(values[4]), HeaderConstants.MaxPacketSize, networkStreamHandler);
+
+                            }
+
+                            var resMessage3 = Encoding.UTF8.GetBytes(_logic.CreateGame(name, genre, sinopsis, path)) ;
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, resMessage3.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(resMessage3);
+
+
+                            break;
+                        case CommandConstants.SendFile:
+                            Console.WriteLine("El cliente está enviando un archivo");
+
+                            byte[] fileTransferBufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var fileInfo = Encoding.UTF8.GetString(fileTransferBufferData);
+                            values = fileInfo.Split(HeaderConstants.Divider);
+
+                            await _fileStreamHandler.ReceiveFile(values[0], int.Parse(values[1]), HeaderConstants.MaxPacketSize, networkStreamHandler);
+
+                            break;
+                        case CommandConstants.RequestGamePhoto:
+                            Console.WriteLine("El cliente solicitó un archivo");
+                            byte[] fileRequestBufferData = await networkStreamHandler.Read(header.IDataLength);
+                            var fileRequestGameId = Encoding.UTF8.GetString(fileRequestBufferData);
+                            var filePathToSend = _logic.GetGamePhotoPath(fileRequestGameId);
+                            var div = HeaderConstants.Divider;
+                            var photoResponseMessage = Encoding.UTF8.GetBytes((filePathToSend.Equals(string.Empty) ? "" : _fileHandler.GetFileName(filePathToSend)) + div +
+                                (filePathToSend.Equals(string.Empty) ? "0" : _fileHandler.GetFileSize(filePathToSend).ToString()));
+
+                            resHeader = new Header(HeaderConstants.Response, CommandConstants.Message, photoResponseMessage.Length);
+                            await networkStreamHandler.Write(resHeader.GetResponse());
+                            await networkStreamHandler.Write(photoResponseMessage);
+
+                            var fileParts = _fileStreamHandler.GetFileParts(filePathToSend, HeaderConstants.MaxPacketSize);
+                            foreach (var i in fileParts)
+                            {
+                                await networkStreamHandler.Write(i);
+                            }
+
+                            break;
+                    }
 
                 }
                 catch (SocketException ex)

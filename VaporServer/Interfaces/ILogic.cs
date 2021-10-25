@@ -12,6 +12,8 @@ namespace VaporServer.Interfaces
 
         public abstract string PrintGameDetails(string idJuego);
 
-        public virtual void CreateGame( ) { }
+        public abstract string CreateGame(string name, string genre, string sinopsis, string path);
+
+        public abstract string GetGamePhotoPath(string idJuego);
     }
 }

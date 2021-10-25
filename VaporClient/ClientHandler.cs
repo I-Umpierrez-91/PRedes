@@ -1,4 +1,6 @@
 ﻿using Common;
+using Common.FileHandler;
+using Common.FileHandler.Interfaces;
 using Common.Interfaces;
 using Common.NetworkUtils;
 using Common.NetworkUtils.Interfaces;
@@ -18,6 +20,7 @@ namespace VaporClient
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
         private TcpClient _tcpClient;
         private INetworkStreamHandler _networkStreamHandler;
+        private IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
         public async Task ClientHandlerStart()
         {
             var clientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
@@ -45,6 +48,16 @@ namespace VaporClient
             await _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
         }
 
+        public async Task SendParts(string path)
+        {
+            var _fileStreamHandler = new FileStreamHandler();
+            var fileParts = _fileStreamHandler.GetFileParts(path, HeaderConstants.MaxPacketSize);
+            foreach (var i in fileParts)
+            {
+                await _networkStreamHandler.Write(i);
+            }
+        }
+
         public async Task< string> ReadResponse()
         {
             var headerLength = Header.GetLength();
@@ -57,6 +70,28 @@ namespace VaporClient
             var result = Encoding.UTF8.GetString(bufferData);
 
             return result;
+        }
+
+        public async Task<string > ReceiveFile()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+
+            string fileInfo = await ReadResponse();
+            string[] values = fileInfo.Split(HeaderConstants.Divider);
+
+            string fileName = values[0];
+            string fileSize = values[1];
+
+            if (int.Parse(fileSize) > 0)
+            {
+                await _fileStreamHandler.ReceiveFile(fileName, int.Parse(fileSize), HeaderConstants.MaxPacketSize, _networkStreamHandler);
+               string receivePath = workingDirectory + "\\" + fileName;
+                return "La carátula fue descargada en: " + receivePath;
+            }
+            else
+            {
+                return "El juego no tiene carátula";
+            }
         }
     }
 }
