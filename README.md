@@ -1,5 +1,7 @@
 # PRedes - Obligatorio 2 - 254254 - Ismael Umpierrez
  
+Proyecto git Público: https://github.com/I-Umpierrez-91/PRedes
+ 
 ## Documentación
 
 ### Diseño de la aplicación
