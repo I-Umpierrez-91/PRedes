@@ -1,13 +1,5 @@
-# PRedes
+# PRedes - Obligatorio 2 - 254254 - Ismael Umpierrez
  
-## Pendientes
-
-- Diagramas
-- Documentacion
-
-
-- Cambiar logs para que dependan de una variable.
-
 ## Documentación
 
 ### Diseño de la aplicación
@@ -16,11 +8,19 @@
 
 La aplicación consiste de dos módulos principales, cliente y servidor. Además se cuenta con proyectos auxiliares dentro de la solución que permiten desacoplar y reutilizar el código entre las dos aplicaciones principales.
 
+Estas premisas se intentaron mantener en toda la extensión del obligatorio, se ha tratado de cuidar al máximo posible la legibilidad del código. También se ha hecho hincapié en la usabilidad de las aplicaciones resultantes.
+
+Debajo se muestra un diagrama donde se puede ver la disposición general de los paquetes y para el caso de las aplicaciones principales la interacción entre sus componentes. También se intenta mostrar cuales son las dependencias.
+
+![image](https://user-images.githubusercontent.com/11521819/138788704-6cecf2aa-3845-4307-be19-fd0cc66ec39b.png)
+
 ##### Servidor
 
 El servidor está contenido en el proyecto VaporServer. Dentro del Servidor se cuenta con una clase principal llamada Server que se encarga de manejar la interacción con el usuario administrador y de invocar a la clase ServerHandler que se encarga de manejar las requests de los clientes y mantener las conexiones con ellos.
 
-La clase ServerHandler actua como controlador, y es la única que interactúa con la lógica, representada por la clase logic. La clase Logic es la encargada de implementar la lógica de negocio y de mantener los repositorios de los datos, que son mantenidos en memoria con excepción de las imágenes que se guardan en el directorio donde corra la aplicación.
+La clase ServerHandler actua como controlador, y es la única que interactúa con la lógica, representada por la clase logic. Esta interacción se da a través de la inyección de dependencias usando la interfaz ILogic.
+
+La clase Logic es la encargada de implementar la lógica de negocio y de mantener los repositorios de los datos, que son mantenidos en memoria con excepción de las imágenes que se guardan en el directorio donde corra la aplicación.
 
 En el proyecto VaporServer también reside la carpeta test donde se incluye la clase TestData que se encarga de insertar datos de prueba y los archivos que se usan para las carátulas de los Juegos creados por esta clase.
 
@@ -40,14 +40,30 @@ Por último se tiene el proyecto Protocol Library que se encarga de definir el p
 
 #### Protocolo utilizado
 
+El protocolo elegido fue el que se sugirió en la letra del obligatorio con una pequeña diferencia, la diferencia consiste en que se agrega un sector de datos opcional luego del header que contiene los bytes correspondientes al archivo si es que se quiere enviar uno.
 
+Otra decisión importante respecto al protocolo es que cuando se quieren enviar conjuntos de datos independientes, estos se separan en el mensaje usando un divisor que está definido en la clase HeaderConstants.
+
+Protocolo:
+
+| Nombre del campo | Header  | CMD  | Largo  | Datos    | Datos adicionales (Opcional) |
+|------------------|---------|------|--------|----------|------------------------------|
+| Valores          | RES/REQ | 0-99 | Entero | Variable | Variable                     |
+| Largo            | 3       | 2    | 4      | Variable | Variable                     |
+
+El proyecto ProtocolLibrary contiene todo lo relativo al protocolo, la clase CommandConstants contiene la lista de los comandos permitidos incluyendo los ids de cada una de las operaciones. Ambas aplicaciones interactúan sacando las constantes de ahi.
+
+La clase Header contiene funciones útiles para armar y desarmar los mensajes. Se provee también la funcionalidad de armar templates de headers para respuestas y requests.
 
 #### Manejo del paralelismo
 
+Para manejar el paralelismo se usa la clase Task. Esto comprende un cambio respecto al obligatorio 1 donde usabamos Threads. El paralelismo se aplica cuando el servidor recibe la solicitud de conexión de un cliente, al establecer la conexión se inicia un Task correspondiente al nuevo cliente.
+
+Además se hizo uso del patrón async await en otras partes del código, por ejemplo en los handlers de las aplicaciones.
 
 #### Manejo de la mutua exclusión
 
-
+Para asegurar la mutua exclusión se hizo uso de Lock. Cada vez que se quiere modificar una de las colecciones del sistema la misma se bloquea para asegurar que no hay lecturas sucias. Esto también es un cambio respecto al obligatorio 1 donde no había podido ser aplicado.
 
 ### Limitaciones y errores conocidos
 
