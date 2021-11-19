@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VaporClient", "VaporClient\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolLibrary", "ProtocolLibrary\ProtocolLibrary.csproj", "{F4BDB5A8-0667-4664-8B05-3838D70D3624}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaporServerLogs", "VaporServerLogs\VaporServerLogs.csproj", "{44E1ECCB-56F5-4AF6-B04B-0286187286E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F4BDB5A8-0667-4664-8B05-3838D70D3624}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4BDB5A8-0667-4664-8B05-3838D70D3624}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4BDB5A8-0667-4664-8B05-3838D70D3624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E1ECCB-56F5-4AF6-B04B-0286187286E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44E1ECCB-56F5-4AF6-B04B-0286187286E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44E1ECCB-56F5-4AF6-B04B-0286187286E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44E1ECCB-56F5-4AF6-B04B-0286187286E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
