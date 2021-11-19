@@ -16,6 +16,7 @@ namespace VaporServer
         {
             Console.WriteLine("Iniciando servidor...");
             var _serverHandler = new ServerHandler();
+            var _MQHandler = new MQHandler();
             bool testDataLoaded = false;
             var startup = Task.Run(() =>_serverHandler.ServerHandlerStart());
             Console.WriteLine("Esperando a nuevos clientes...");
