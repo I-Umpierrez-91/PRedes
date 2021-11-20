@@ -1,4 +1,4 @@
-﻿namespace VaporServer
+﻿namespace VaporServerLogs
 {
     class ServerConfig
     {

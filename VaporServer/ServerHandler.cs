@@ -27,8 +27,13 @@ namespace VaporServer
         static public IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
         private static int _clientNumber;
         private static ILogic _logic = new Logic();
+        private static LogHandler _LogHandler;
         static bool _exit = false;
 
+        public ServerHandler(LogHandler logHandler) {
+            _LogHandler = logHandler;
+        }
+        
         public async Task ServerHandlerStart()
         {
             var localEp = new IPEndPoint(
@@ -60,7 +65,7 @@ namespace VaporServer
             _clients.Add(client);
             var connected = true;
             var logged = false;
-            Console.WriteLine("Conectado el cliente " + id);
+            _LogHandler.WriteLog("Info", "Conectado el cliente " + id, "NA", "NA");
             var networkStreamHandler = new NetworkStreamHandler(client.GetStream());
             while (connected && !logged && !_exit)
             {
@@ -99,13 +104,13 @@ namespace VaporServer
                 }
                 catch (SocketException ex)
                 {
-                    Console.WriteLine("El cliente " + id + " cerró la conexión");
+                    _LogHandler.WriteLog("Info", "El cliente " + id + " cerró la conexión", "NA", "NA");
                     _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
                     connected = false;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error interno, cerrando la conexión. " + ex.GetType());
+                    _LogHandler.WriteLog("Error", "Error interno, cerrando la conexión. " + ex.GetType(), "NA", "NA");
                     _clients.TryTake(out client, TimeSpan.FromMilliseconds(1000));
                     connected = false;
                 }
