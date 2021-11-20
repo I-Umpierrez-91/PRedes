@@ -15,8 +15,11 @@ namespace VaporServer
         private static async Task Main()
         {
             Console.WriteLine("Iniciando servidor...");
-            var _serverHandler = new ServerHandler();
-            var _MQHandler = new MQHandler();
+            var _LogHandler = new LogHandler();
+            Console.WriteLine("Iniciado...");
+            //var startLogs = Task.Run(() =>_LogHandler.LogHandlerStart());
+            //await _LogHandler.LogHandlerStart();
+            var _serverHandler = new ServerHandler(_LogHandler);
             bool testDataLoaded = false;
             var startup = Task.Run(() =>_serverHandler.ServerHandlerStart());
             Console.WriteLine("Esperando a nuevos clientes...");
@@ -34,6 +37,7 @@ namespace VaporServer
                 Console.WriteLine("6: Calificar juego");
                 Console.WriteLine("7: Buscar juegos");
                 Console.WriteLine("8: Ver juegos de usuario");
+                Console.WriteLine("9: Opciones del servidor");
                 Console.WriteLine("99: Cargar datos de prueba");
                 Console.WriteLine("Ingrese el número de su opción: " +
                     "");
@@ -168,6 +172,9 @@ namespace VaporServer
                         Console.ReadLine();
                         Console.Clear();
                         break;
+                    case "9":
+                        DisplayAdministrationMenu(_LogHandler);
+                        break;
                     case "99":
                         if (!testDataLoaded)
                         {
@@ -186,6 +193,43 @@ namespace VaporServer
                     default:
                         Console.WriteLine("Opcion incorrecta ingresada");
                         break;
+                }
+            }
+        }
+        private static void DisplayAdministrationMenu(LogHandler _LogHandler)
+        {
+
+            var exitAdminMenu = false;
+            while (!exitAdminMenu)
+            {
+                Console.Clear();
+                Console.WriteLine("--OPCIONES DE LOGS--");
+                Console.WriteLine("Opciones validas: ");
+                Console.WriteLine("0: Salir");
+                Console.WriteLine("1: Logs solo en consola");
+                Console.WriteLine("2: Logs en consola y a Rabbit MQ");
+                Console.WriteLine("3: Logs solo a Rabbit MQ");
+                Console.WriteLine("Ingrese el número de su opción: " +
+                    "");
+                var userInput = Console.ReadLine();
+                switch (userInput)
+                {                    
+                    case "0":
+                        exitAdminMenu = true;
+                        Console.Clear();
+                        break;
+                    case "1":
+                        _LogHandler.SetLogOption(1);
+                        break;
+                    case "2":
+                        _LogHandler.SetLogOption(2);
+                        break;
+                    case "3":
+                        _LogHandler.SetLogOption(3);
+                        break;
+                    default:
+                        Console.WriteLine("Opcion incorrecta ingresada");
+                    break;
                 }
             }
         }
