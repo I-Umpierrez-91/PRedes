@@ -18,11 +18,19 @@ namespace VaporServerLogs
         {
             //CreateHostBuilder(args).Build().Run();
             using var channel = new ConnectionFactory() {HostName = SettingsMgr.ReadSetting(ServerConfig.LogQueueIpConfigKey)}.CreateConnection().CreateModel();
-            channel.QueueDeclare(queue: "log_queue",
+            channel.ExchangeDeclare(exchange: "vapor_logs",
+                type: "topic",
                 durable: false,
-                exclusive: false,
                 autoDelete: false,
                 arguments: null);
+
+            var queueName = channel.QueueDeclare().QueueName;
+
+            var routingKey = "*.*.*";
+
+            channel.QueueBind(queue: queueName,
+                exchange: "vapor_logs",
+                routingKey: routingKey);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -32,7 +40,7 @@ namespace VaporServerLogs
                 var log = JsonSerializer.Deserialize<Log>(message);
                 Console.WriteLine(" [x] Received log level [{0}], message [{1}]", log.Level, log.Message);
             };
-            channel.BasicConsume(queue: "log_queue",
+            channel.BasicConsume(queue: queueName,
                 autoAck: true,
                 consumer: consumer);
 

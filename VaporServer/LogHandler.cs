@@ -17,26 +17,30 @@ namespace VaporServer
         public LogHandler()
         {
             channel = new ConnectionFactory() {HostName = SettingsMgr.ReadSetting(ServerConfig.LogQueueIpConfigKey)}.CreateConnection().CreateModel();
-            channel.QueueDeclare(queue: "log_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
+                channel.ExchangeDeclare(exchange: "vapor_logs",
+                    type: "topic");
         }
 
-        public void WriteLog(string severity, string LogMessage) {
-            var log = new Log() {Level = severity, Message = LogMessage};
+        public void WriteLog(string severity, string LogMessage, string LogGame, string LogUser) {
+            var log = new Log() {
+                Level = severity, 
+                Message = LogMessage,
+                GameName = LogGame,
+                UserName = LogUser,
+                Timestamp = DateTime.Today.Date
+            };
+            //Routing key: game.user.date
+            var routingKey = LogGame + "." + LogUser + "." + DateTime.Today.Date;
             switch (logOption) {
                 case 1:
                     Console.WriteLine("Level: " + severity + " - Message: " + LogMessage);
                     break;
                 case 2:
                     Console.WriteLine("Level: " + severity + " - Message: " + LogMessage);
-                    Task.Run(() => SendMessage(log));
+                    Task.Run(() => SendMessage(log, routingKey));
                     break;
                 case 3:
-                    Task.Run(() => SendMessage(log));
+                    Task.Run(() => SendMessage(log, routingKey));
                     break;                
             }
         }
@@ -45,16 +49,15 @@ namespace VaporServer
             logOption = option;
         }
 
-        public async Task<bool> SendMessage(Log message)
+        public async Task<bool> SendMessage(Log message, string routingKey)
         {
             bool returnVal;
             var stringLog = JsonSerializer.Serialize(message);
             try
             {
                 var body = Encoding.UTF8.GetBytes(stringLog);
-                channel.BasicPublish(exchange: "",
-                    routingKey: "log_queue",
-                    basicProperties: null,
+                channel.BasicPublish(exchange: "vapor_logs",
+                    routingKey: routingKey,
                     body: body);
                 returnVal = true;
             }
