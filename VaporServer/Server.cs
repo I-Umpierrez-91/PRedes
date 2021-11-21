@@ -17,6 +17,7 @@ namespace VaporServer
         private static async Task Main()
         {
             Console.WriteLine("Iniciando servidor...");
+            var _grpdHandler = Task.Run(()=>CreateHostBuilder(null).Build().Run());
             var _LogHandler = new LogHandler();
             Console.WriteLine("Iniciado...");
             //var startLogs = Task.Run(() =>_LogHandler.LogHandlerStart());

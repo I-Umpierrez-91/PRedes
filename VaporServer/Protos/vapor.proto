@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "VaporServer";
+
+package users;
+
+service UserService {
+   rpc CreateUser(UserRequest) returns (StringResult) {}
+}
+
+message UserRequest{
+	string username = 1;
+	string password = 2;
+}
+
+message StringResult{
+	string message = 1;
+}

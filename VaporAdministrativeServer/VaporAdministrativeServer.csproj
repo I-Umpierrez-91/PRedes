@@ -9,11 +9,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Protos\vapor.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\vapor.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>
