@@ -1,4 +1,6 @@
-﻿
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Hosting;
 using Common.FileHandler;
 using Common.FileHandler.Interfaces;
 using System;
@@ -233,6 +235,17 @@ namespace VaporServer
                 }
             }
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.ConfigureKestrel(options =>
+            {
+                options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
+            });
+            webBuilder.UseStartup<Startup>();
+        });
     }
 }
 
