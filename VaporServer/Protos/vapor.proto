@@ -6,6 +6,16 @@ package users;
 
 service UserService {
    rpc CreateUser(UserRequest) returns (StringResult) {}
+   rpc ModifyUser(UserRequest) returns (StringResult) {}
+   rpc DeleteUser(UserRequest) returns (StringResult) {}
+}
+
+service GameService {
+	rpc CreateGame(GameRequest) returns (StringResult) {}
+	rpc ModifyGame(GameRequest) returns (StringResult) {}
+	rpc DeleteGame(GameRequest) returns (StringResult) {}
+	rpc BuyGame(GameBuyRequest) returns (StringResult) {}
+	rpc ReturnGame(GameBuyRequest) returns (StringResult) {}
 }
 
 message UserRequest{
@@ -15,4 +25,16 @@ message UserRequest{
 
 message StringResult{
 	string message = 1;
+}
+
+message GameRequest{
+	string name = 1;
+	string genre = 2;
+	string sinopsis = 3;
+	string path = 4;
+}
+
+message GameBuyRequest{
+	string username = 1;
+	string gameId = 2;
 }

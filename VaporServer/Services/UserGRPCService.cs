@@ -1,8 +1,5 @@
 ﻿using Grpc.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VaporServer.Interfaces;
 
@@ -25,6 +22,47 @@ namespace VaporServer.Services
             }
 
             return Task.FromResult(new StringResult {
+
+                Message = retMessage
+
+            });
+        }
+
+        public override Task<StringResult> ModifyUser(UserRequest request, ServerCallContext context)
+        {
+            var retMessage = "";
+            try
+            {
+                retMessage = _logic.ModifyUser(request.Username, request.Password);
+            }
+            catch (Exception e)
+            {
+
+                retMessage = e.Message;
+            }
+
+            return Task.FromResult(new StringResult
+            {
+
+                Message = retMessage
+
+            });
+        }
+        public override Task<StringResult> DeleteUser(UserRequest request, ServerCallContext context)
+        {
+            var retMessage = "";
+            try
+            {
+                retMessage = _logic.DeleteUser(request.Username);
+            }
+            catch (Exception e)
+            {
+
+                retMessage = e.Message;
+            }
+
+            return Task.FromResult(new StringResult
+            {
 
                 Message = retMessage
 
