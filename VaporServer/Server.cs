@@ -1,4 +1,6 @@
-﻿
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Hosting;
 using Common.FileHandler;
 using Common.FileHandler.Interfaces;
 using System;
@@ -15,6 +17,7 @@ namespace VaporServer
         private static async Task Main()
         {
             Console.WriteLine("Iniciando servidor...");
+            var _grpdHandler = Task.Run(()=>CreateHostBuilder(null).Build().Run());
             var _LogHandler = new LogHandler();
             Console.WriteLine("Iniciado...");
             //var startLogs = Task.Run(() =>_LogHandler.LogHandlerStart());
@@ -233,6 +236,17 @@ namespace VaporServer
                 }
             }
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.ConfigureKestrel(options =>
+            {
+                options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
+            });
+            webBuilder.UseStartup<Startup>();
+        });
     }
 }
 
