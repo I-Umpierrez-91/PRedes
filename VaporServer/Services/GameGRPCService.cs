@@ -50,5 +50,38 @@ namespace VaporServer.Services
             });
         }
 
+        public override Task<StringResult> ModifyGame(GameRequest game, ServerCallContext context)
+        {
+            var retMessage = "not implemented";
+            return Task.FromResult(new StringResult
+            {
+
+                Message = retMessage
+
+            });
+        }
+
+        public override Task<StringResult> DeleteGame(GameRequest game, ServerCallContext context)
+        {
+            var retMessage = "not implemented";
+            return Task.FromResult(new StringResult
+            {
+
+                Message = retMessage
+
+            });
+        }
+
+        public override Task<StringResult> ReturnGame(GameBuyRequest game, ServerCallContext context)
+        {
+            var retMessage = "not implemented";
+            return Task.FromResult(new StringResult
+            {
+
+                Message = retMessage
+
+            });
+        }
+
     }
 }

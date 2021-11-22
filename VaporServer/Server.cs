@@ -243,7 +243,7 @@ namespace VaporServer
         {
             webBuilder.ConfigureKestrel(options =>
             {
-                options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
+                options.ListenLocalhost(6501, o => o.Protocols = HttpProtocols.Http2);
             });
             webBuilder.UseStartup<Startup>();
         });

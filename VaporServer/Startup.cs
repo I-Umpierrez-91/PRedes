@@ -33,7 +33,7 @@ namespace VaporServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<UserGRPCService>();
-
+                endpoints.MapGrpcService<GameGRPCService>();
                 endpoints.MapGet("/",
                     async context =>
                     {

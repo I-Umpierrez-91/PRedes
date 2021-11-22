@@ -11,7 +11,7 @@ using RabbitMQ.Client.Events;
 
 namespace VaporServerLogs
 {
-    public class LogLogic
+    public static class LogLogic
     {
         private static ISettingsManager SettingsMgr = new SettingsManager();
 
@@ -23,7 +23,7 @@ namespace VaporServerLogs
 
         private static Dictionary<string, List<Log>> _storedLogs = new Dictionary<string, List<Log>>();
 
-        public LogLogic()
+        public static void InitializeLogLogic()
         {
             _channel = new ConnectionFactory() { HostName = SettingsMgr.ReadSetting(ServerConfig.LogQueueIpConfigKey) }.CreateConnection().CreateModel();
             _channel.ExchangeDeclare(exchange: "vapor_logs",
@@ -33,11 +33,13 @@ namespace VaporServerLogs
                         arguments: null);
 
             _queueName = _channel.QueueDeclare().QueueName;
-        }
-        public async Task<IEnumerable<Log>> ReadLogs(string gameId, string user, string date)
-        {
-            var filteredLogs = new List<Log>();
 
+            Task.Run(() => startLogReader("*.*.*"));
+        }
+
+
+        private static string GetRoutingKey(string gameId, string user, string date)
+        {
             if (user.Length == 0)
             {
                 user = "*";
@@ -50,7 +52,15 @@ namespace VaporServerLogs
             {
                 date = "*";
             }
-            var routingKey = gameId + "." + user + "." + date;
+            return gameId + "." + user + "." + date;
+
+        }
+
+        public static async Task<IEnumerable<Log>> ReadLogs(string gameId, string user, string date)
+        {
+            var filteredLogs = new List<Log>();
+
+            var routingKey = GetRoutingKey(gameId ,user ,date);
 
             bool found = _storedLogs.TryGetValue(routingKey, out filteredLogs);
 
@@ -60,13 +70,30 @@ namespace VaporServerLogs
             }
             else
             {
-                Task.Run(()=>startLogReader(routingKey));
-                return filteredLogs;
+                return new List<Log>() { new Log() { Level = "Info", Message = "No existe un binding para esa routing key. Para crear uno haga un post con la misma informacion." } };
             }
 
         }
 
-        private async Task startLogReader(string routingKey)
+        public static async Task<string> CreateLog(string gameId, string user, string date)
+        {
+            var routingKey = GetRoutingKey(gameId, user, date);
+
+            bool found = _storedLogs.TryGetValue(routingKey, out var filteredLogs);
+
+            if (found)
+            {
+                return "La cola de mensajes ya se esta leyendo.";
+            }
+            else
+            {
+                Task.Run(() => startLogReader(routingKey));
+                return "Bind creado.";
+            }
+
+        }
+
+        private static async Task startLogReader(string routingKey)
         {
 
             var LogList = new List<Log>();

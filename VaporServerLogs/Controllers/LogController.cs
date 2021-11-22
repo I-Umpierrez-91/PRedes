@@ -11,14 +11,12 @@ namespace VaporServerLogs.Controllers
     [Route("/Logs")]
     public class LogController : ControllerBase
     {
-        private LogLogic _logic;
 
         private readonly ILogger<LogController> _logger;
 
-        public LogController(ILogger<LogController> logger, LogLogic logLogic)
+        public LogController(ILogger<LogController> logger)
         {
             _logger = logger;
-            _logic = logLogic;
         }
 
         [HttpGet]
@@ -29,7 +27,18 @@ namespace VaporServerLogs.Controllers
             string gameId = HttpContext.Request.Query["gameId"].ToString();
             string date = HttpContext.Request.Query["date"].ToString();
 
-            return new OkObjectResult(_logic.ReadLogs(username, gameId, date));
+            return new OkObjectResult(LogLogic.ReadLogs(username, gameId, date));
+        }
+
+        [HttpPost]
+        //logs?gameId=3&username=juancito
+        public IActionResult Post()
+        {
+            string username = HttpContext.Request.Query["username"].ToString();
+            string gameId = HttpContext.Request.Query["gameId"].ToString();
+            string date = HttpContext.Request.Query["date"].ToString();
+
+            return new OkObjectResult(LogLogic.CreateLog(username, gameId, date));
         }
     }
 }
