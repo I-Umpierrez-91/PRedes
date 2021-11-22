@@ -21,16 +21,13 @@ namespace VaporServer
                     type: "topic");
         }
 
-        public void WriteLog(string severity, string LogMessage, string LogGame, string LogUser) {
+        public void WriteLog(string severity, string LogMessage, string LogGameId, string LogUser) {
             var log = new Log() {
                 Level = severity, 
-                Message = LogMessage,
-                GameName = LogGame,
-                UserName = LogUser,
-                Timestamp = DateTime.Today.Date
+                Message = LogMessage
             };
             //Routing key: game.user.date
-            var routingKey = LogGame + "." + LogUser + "." + DateTime.Today.Date;
+            var routingKey = LogGameId + "." + LogUser + "." + DateTime.Today.Date.ToString();
             switch (logOption) {
                 case 1:
                     Console.WriteLine("Level: " + severity + " - Message: " + LogMessage);
