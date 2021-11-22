@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "91c1b09f-0bf7-4b65-ab69-92c8ceaa8961",
+		"name": "PRedes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AdministrativeServer",
+			"item": [
+				{
+					"name": "Create Game",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\" : \"JuegoGRPC\",\r\n    \"Genre\" : \"Genero loco\",\r\n    \"Sinopsis\" : \"JuegoGRPC\",\r\n    \"Path\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{AdministrativeServer}}/Games",
+							"host": [
+								"{{AdministrativeServer}}"
+							],
+							"path": [
+								"Games"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buy Game",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserName\" : \"Joselito\",\r\n    \"GameId\" : \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{AdministrativeServer}}/Games/Buy",
+							"host": [
+								"{{AdministrativeServer}}"
+							],
+							"path": [
+								"Games",
+								"Buy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserName\" : \"Joselito\",\r\n    \"Password\" : \"Yamazaki\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{AdministrativeServer}}/Users",
+							"host": [
+								"{{AdministrativeServer}}"
+							],
+							"path": [
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserName\" : \"Joselito\",\r\n    \"Password\" : \"Yamazaki es el mejor\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{AdministrativeServer}}/Users",
+							"host": [
+								"{{AdministrativeServer}}"
+							],
+							"path": [
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserName\" : \"Joselito\",\r\n    \"Password\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{AdministrativeServer}}/Users",
+							"host": [
+								"{{AdministrativeServer}}"
+							],
+							"path": [
+								"Users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LogServer",
+			"item": [
+				{
+					"name": "Get all logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LogServer}}/Logs",
+							"host": [
+								"{{LogServer}}"
+							],
+							"path": [
+								"Logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Joselito Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "Add Joselito logs binding",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{LogServer}}/Logs?username=Joselito",
+							"host": [
+								"{{LogServer}}"
+							],
+							"path": [
+								"Logs"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "Joselito"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "AdministrativeServer",
+			"value": "http://localhost:20000"
+		},
+		{
+			"key": "LogServer",
+			"value": "http://localhost:15000"
+		}
+	]
+}
