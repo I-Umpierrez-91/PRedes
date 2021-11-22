@@ -1,11 +1,11 @@
 ﻿using Common;
+using Common.FileHandler;
+using Common.FileHandler.Interfaces;
 using Common.Interfaces;
 using Common.NetworkUtils;
 using Common.NetworkUtils.Interfaces;
 using ProtocolLibrary;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,44 +16,85 @@ namespace VaporClient
     class ClientHandler
     {
         static readonly ISettingsManager SettingsMgr = new SettingsManager();
-        private Socket _socket;
+        private TcpClient _tcpClient;
         private INetworkStreamHandler _networkStreamHandler;
-        public ClientHandler()
+        private IFileStreamHandler _fileStreamHandler = new FileStreamHandler();
+        public async Task ClientHandlerStart()
         {
-            var clientEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0);
-            var serverEndPoint = new IPEndPoint(IPAddress.Parse(SettingsMgr.ReadSetting(ServerConfig.ServerIpConfigKey)),
-                int.Parse(SettingsMgr.ReadSetting(ServerConfig.SeverPortConfigKey)));
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _socket.Bind(clientEndPoint);
-            _socket.Connect(serverEndPoint);
-            _networkStreamHandler = new NetworkStreamHandler(new NetworkStream(_socket));
+            var clientEndPoint = new IPEndPoint(IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientIpConfigKey))
+                , int.Parse(SettingsMgr.ReadSetting(ClientConfig.ClientPortConfigKey)));
+            _tcpClient = new TcpClient(clientEndPoint);
+            try
+            {
+                await _tcpClient.ConnectAsync(
+                    IPAddress.Parse(SettingsMgr.ReadSetting(ClientConfig.ServerIpConfigKey)),
+                    int.Parse(SettingsMgr.ReadSetting(ClientConfig.SeverPortConfigKey))).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            _networkStreamHandler = new NetworkStreamHandler(_tcpClient.GetStream());
             Console.WriteLine("Conectado al servidor");
         }
 
-        public void CloseConnection()
+        public async Task CloseConnection()
         {
-            _socket.Shutdown(SocketShutdown.Both);
-            _socket.Close();
+            _tcpClient.Close();
         }
 
-        public void SendRequest(int CommandConstant, string message)
+        public async Task SendRequest(int CommandConstant, string message)
         {
             var header = new Header(HeaderConstants.Request, CommandConstant, message.Length);
             var data = header.GetRequest();
-            _networkStreamHandler.Write(data);
-            _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
+            await _networkStreamHandler.Write(data);
+            await _networkStreamHandler.Write(Encoding.UTF8.GetBytes(message));
         }
 
-        public string ReadResponse()
+        public async Task SendParts(string path)
+        {
+            var _fileStreamHandler = new FileStreamHandler();
+            var fileParts = _fileStreamHandler.GetFileParts(path, HeaderConstants.MaxPacketSize);
+            foreach (var i in fileParts)
+            {
+                await _networkStreamHandler.Write(i);
+            }
+        }
+
+        public async Task<string> ReadResponse()
         {
             var headerLength = Header.GetLength();
             byte[] buffer;
-            buffer = _networkStreamHandler.Read(headerLength);
+            buffer = await _networkStreamHandler.Read(headerLength);
             var header = new Header();
             header.DecodeData(buffer);
-            byte[] bufferData = _networkStreamHandler.Read(header.IDataLength);
+            byte[] bufferData = await _networkStreamHandler.Read(header.IDataLength);
 
-            return Encoding.UTF8.GetString(bufferData);
+            var result = Encoding.UTF8.GetString(bufferData);
+
+            return result;
+        }
+
+        public async Task<string> ReceiveFile()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+
+            string fileInfo = await ReadResponse();
+            string[] values = fileInfo.Split(HeaderConstants.Divider);
+
+            string fileName = values[0];
+            string fileSize = values[1];
+
+            if (int.Parse(fileSize) > 0)
+            {
+                await _fileStreamHandler.ReceiveFile(fileName, int.Parse(fileSize), HeaderConstants.MaxPacketSize, _networkStreamHandler);
+                string receivePath = workingDirectory + "\\" + fileName;
+                return "La carátula fue descargada en: " + receivePath;
+            }
+            else
+            {
+                return "El juego no tiene carátula";
+            }
         }
     }
 }

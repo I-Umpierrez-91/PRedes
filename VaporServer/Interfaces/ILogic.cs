@@ -9,9 +9,19 @@ namespace VaporServer.Interfaces
     public interface ILogic
     {
         public abstract string PrintGameList();
+        public abstract string PrintGameDetails(string gameId);
+        public abstract string CreateGame(string name, string genre, string sinopsis, string path);
+        public abstract string GetGamePhotoPath(string idJuego);
+        public abstract string CreateUser(string username, string password);
+        public abstract string ModifyUser(string username, string password);
+        public abstract string DeleteUser(string username);
+        public abstract bool Login(string username, string password);
+        public abstract string BuyGame(string username, string gameId);
+        public abstract string ReviewGame(string username, string gameId, string calification, string reviewNotes);
+        public abstract string GetFilteredGames(string nameFilter, string minRatingFilter, string maxRatingFilter, string genreFilter);
+        public abstract string GetUserGames(string username);
 
-        public abstract string PrintGameDetails(string idJuego);
+        public abstract string GetGameId(string gameName);
 
-        public virtual void CreateGame( ) { }
     }
 }
