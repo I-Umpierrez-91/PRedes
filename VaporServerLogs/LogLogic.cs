@@ -76,8 +76,6 @@ namespace VaporServerLogs
                         exchange: "vapor_logs",
                         routingKey: routingKey);
 
-            Console.WriteLine("antes del loop");
-
             var consumer = new EventingBasicConsumer(_channel);
 
             consumer.Received += (model, ea) =>
@@ -87,11 +85,9 @@ namespace VaporServerLogs
                 var log = JsonSerializer.Deserialize<Log>(message);
                 _storedLogs.TryGetValue(routingKey, out var storedList );
                 storedList.Add(log);
-                Console.WriteLine("loop / mensaje");
                 Console.WriteLine(log.Message);
                 ;
             };
-            Console.WriteLine("just looping por aca");
             _channel.BasicConsume(queue: _queueName,
                 autoAck: true,
                 consumer: consumer);
