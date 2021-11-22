@@ -30,6 +30,30 @@ En el proyecto VaporServer también reside la carpeta test donde se incluye la c
 
 El cliente tiene una arquitectura interna parecida a la del servidor. Se encuentra en el proyecto VaporClient. Se cuenta con una clase principal llamada Client que se encarga de la interacción con el usuario y que también instancia y hace uso de una clase ClientHandler. Esta última tiene varias funcionalidades de apoyo a la primera, por ejemplo establece la conexión, contiene métodos para ayudar a escribir y leer mensajes a través del protocolo utilizado y contiene parte de la inteligencia usada para recibir archivos.
 
+#### Cambios para el segundo obligatorio:
+
+![image](https://user-images.githubusercontent.com/11521819/142950667-c2c76f10-a30e-4ad9-bb18-9febb54b52a0.png)
+
+##### Servidor Administrativo
+
+El servidor administrativo recibe solicitudes por una Api Rest, traduce estas solicitudes y las envia via gRPC al servidor donde se ejecutan los metodos que ya existian.
+Este servidor tiene la particularidad de que utiliza HTTP1 para una conexión (API) y HTTP2 para la otra (gRPC).
+No fue necesario hacer cambios en la lógica del servidor porque desde un principio la solución fue pensada para recibir mensajes informando sobre los cambios que se hacen en el server. De esta manera los mismos outputs que se usaban antes cuando alguien ejecutaba algo desde un cliente o desde el mismo servidor sirven para viajar primero por gRPC y luego ser enviados por la API.
+Lo que si fue necesario fue agregar las dependencias de gRPC y proveer un listener de HTTP2 para que las solicitudes de gRPC puedan ser recibidas.
+
+Las funcionalidades que implementa el servidor administrativo son:
+
+1. ABM Usuarios.
+2. Alta de juegos.
+3. Compra de juegos.
+
+##### Servidor de logs
+
+El servidor de logs se comunica con el servidor de RabbitMQ y obtiene de él los mensajes que el servidor haya enviado a la cola de mensajes. En el servidor se tuvo que crear una clase encargada de manejar los logs. Esta clase es usada por el ServerHandler y trackea las interacciónes que hacen los usuarios a través de las aplicaciones cliente.
+El servidor cuenta con una API para administrarlo, esta interfaz permite obtener los bugs y también crear nuevos bindings para obtener bugs filtrados.
+
+Tanto en el servidor de logs como en el servidor administrativo se intentó seguir una convención de RestFull API. Creando además microservicios que se encargan de las funcionalidades.
+
 #### Clases auxiliares
 
 Como parte de los esfuerzos en pos de la reutilización del código, pero también para ayudar a desacoplar y entender mejor el mismo, se cuenta con una serie de proyectos/clases auxiliares donde se derivan algunas tareas repetitivas.
@@ -69,7 +93,7 @@ Para asegurar la mutua exclusión se hizo uso de Lock. Cada vez que se quiere mo
 
 ### Limitaciones y errores conocidos
 
-Se sabe que tanto la aplicación cliente como la aplicación servidor no manejan de la manera más agraciada los casos de uso donde se parte de la lista de juegos y se sigue con alguna acción cuando no hay ningún juego cargaco.
+Se sabe que tanto la aplicación cliente como la aplicación servidor no manejan de la manera más agraciada los casos de uso donde se parte de la lista de juegos y se sigue con alguna acción cuando no hay ningún juego cargado.
 
 Un ejemplo de esto es cuando se quiere comprar un juego y todavía no hay ninguno, se solicita igualmente el número de juego.
 
@@ -99,6 +123,8 @@ Para este obligatorio se implementaron todas las funcionalidades solicitadas, ag
 ### Información para el test
 
 Al compilar la aplicación se crean los ejecutables para el cliente y el servidor. Están en \VaporClient\bin\Debug\net5.0 y \VaporServer\bin\Debug\net5.0 respectivamente.
+
+Para la versión de la tercera entrega, la idea se mantiene, los ejecutables que se generan pueden ser corridos. Se agrega también una colección de PostMan con las llamadas implementadas a las API que fueron creadas en los dos proyectos nuevos.
 
 Se provee la funcionalidad de carga de datos de prueba en la aplicación servidor. Para ejecutarla solamente tienen que seleccionar la opción 99 en el menú. A continuación se provee un resumen de los datos de prueba:
 
